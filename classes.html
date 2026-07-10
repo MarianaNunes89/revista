@@ -26,10 +26,19 @@
   .clsmember .add:hover{background:var(--petrol);color:#fff}
   .clsmember .add[disabled]{opacity:.45;cursor:default;background:var(--paper)}
   .mechtag{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted)}
+  .topnav{display:flex;gap:6px;padding:18px 0 0}
+  .topnav a{font-family:"Inter",sans-serif;font-size:13px;font-weight:600;text-decoration:none;color:var(--muted);padding:7px 14px;border-radius:20px;border:1px solid var(--line)}
+  .topnav a.active{color:#fff;background:var(--petrol);border-color:var(--petrol)}
+  .topnav a:hover:not(.active){background:var(--paper)}
 </style>
 </head>
 <body>
 <div class="wrap">
+
+  <nav class="topnav">
+    <a href="index.html">Análise da lista</a>
+    <a href="classes.html" class="active">Por classes</a>
+  </nav>
 
   <header>
     <div class="brandrow">

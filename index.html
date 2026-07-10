@@ -9,9 +9,20 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
+<style>
+  .topnav{display:flex;gap:6px;padding:18px 0 0}
+  .topnav a{font-family:"Inter",sans-serif;font-size:13px;font-weight:600;text-decoration:none;color:var(--muted);padding:7px 14px;border-radius:20px;border:1px solid var(--line)}
+  .topnav a.active{color:#fff;background:var(--petrol);border-color:var(--petrol)}
+  .topnav a:hover:not(.active){background:var(--paper)}
+</style>
 </head>
 <body>
 <div class="wrap">
+
+  <nav class="topnav">
+    <a href="index.html" class="active">Análise da lista</a>
+    <a href="classes.html">Por classes</a>
+  </nav>
 
   <header>
     <div class="brandrow">
