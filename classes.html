@@ -121,6 +121,9 @@ const ACUTO_PREFIX = ["M01A", "J01", "J02", "N02CC", "P01AB", "M04AC"];
 const isAcuto = s => ACUTO_PREFIX.some(p => (s.atcCls||"").startsWith(p));
 const WARN_SVG = `<span class="warn" title="Fármaco tipicamente de uso agudo/pontual — não habitual como medicação crónica. Rever indicação e duração." aria-label="Rever: uso tipicamente agudo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>`;
 
+/* nome curto da classe para a lista (tira o qualificador entre parêntesis) */
+const shortCls = c => (c||"").replace(/\s*\(.*?\)\s*/g, "").trim();
+
 const inList = a => patient.some(s => s.a === a);
 function addByAtc(a){ const s=INDEX.find(x=>x.a===a); if(s && !inList(a)){ patient.push(s); render(); } }
 function removeByAtc(a){ patient = patient.filter(s => s.a !== a); render(); }
@@ -132,7 +135,7 @@ function render(){
   patient.forEach(s => {
     const row = document.createElement("div"); row.className = "med";
     row.innerHTML = `<span class="body"><span class="name">${s.d}${isAcuto(s)?WARN_SVG:""}</span>
-      <span class="clsline">${s.cls}</span></span>
+      <span class="clsline">${shortCls(s.cls)}</span></span>
       <button class="rm" title="Remover" data-a="${s.a}">×</button>`;
     ml.appendChild(row);
   });
