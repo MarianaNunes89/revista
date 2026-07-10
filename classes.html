@@ -120,11 +120,9 @@ function render(){
   // lista
   const ml = $("#medList"); ml.innerHTML = "";
   patient.forEach(s => {
-    const chips = s.p.map(p => `<span class="chip">${PROP_LABELS[p]||p}</span>`).join("");
     const row = document.createElement("div"); row.className = "med";
     row.innerHTML = `<span class="body"><span class="name">${s.d}</span>
-      <span class="clsline">${s.cls}</span>
-      ${chips?`<span class="chips">${chips}</span>`:""}</span>
+      <span class="clsline">${s.cls}</span></span>
       <button class="rm" title="Remover" data-a="${s.a}">×</button>`;
     ml.appendChild(row);
   });
