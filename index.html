@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revista — análise de interações em polimedicação</title>
+<meta name="description" content="Protótipo de análise de interações medicamentosas e apoio à prescrição para o utente polimedicado. Pensado para Medicina Geral e Familiar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brandrow">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> Protótipo · demonstração</div>
+        <h1>O copiloto lê a lista <span class="accent">toda.</span></h1>
+        <p class="lede">Análise de interações e apoio à prescrição para o utente polimedicado, sempre sobre a lista inteira. Pensado para Medicina Geral e Familiar.</p>
+      </div>
+      <div>
+        <div class="wordmark">Re<span>vista</span></div>
+        <div class="byline">conceito · Mariana S. N. Alves</div>
+      </div>
+    </div>
+    <div class="strip">
+      <div class="them">
+        <div class="k">Copiloto de fármacos atual</div>
+        <div class="v">Reconhece <b>o primeiro fármaco</b> da pergunta e ignora os restantes. Um de cada vez.</div>
+      </div>
+      <div class="us">
+        <div class="k">Esta abordagem</div>
+        <div class="v">Lê a lista inteira, cruza <b id="pairCount">todos os pares</b> e fundamenta cada escolha de prescrição.</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- LEFT -->
+    <div class="panel">
+      <div class="panel-h"><h2>Medicação do utente</h2><span class="count" id="medCount">0 fármacos</span></div>
+      <div class="meds" id="medList"></div>
+      <div class="addrow">
+        <label for="acInput">Adicionar fármaco</label>
+        <input class="ac-input" id="acInput" type="text" autocomplete="off" placeholder="Escreva as primeiras letras…" aria-expanded="false" role="combobox" aria-controls="acList">
+        <div class="ac-list" id="acList" role="listbox"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="rightcol">
+
+      <div class="panel">
+        <div class="panel-h"><h2>Matriz de interações</h2><span class="count" id="mxCount">·</span></div>
+        <div class="matrix-body" id="matrixBox"></div>
+        <div class="legend">
+          <span><i style="background:var(--major)"></i> Maior · evitar</span>
+          <span><i style="background:var(--moderate)"></i> Moderada · monitorizar</span>
+          <span><i style="background:var(--minor)"></i> Menor · vigiar</span>
+          <span><i style="background:#eef2f1"></i> Sem interação conhecida</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h"><h2>Interações encontradas</h2><span class="count" id="findCount">·</span></div>
+        <div class="findings" id="findings"></div>
+      </div>
+
+      <!-- start a class -->
+      <div class="panel">
+        <div class="panel-h"><h2>Iniciar nova medicação crónica</h2><span class="count">terapêutica de manutenção</span></div>
+        <div class="qrow">
+          <span class="qlabel">Preciso de iniciar:</span>
+          <select class="qsel" id="startSel">
+            <option value="">Selecionar classe…</option>
+            <option value="diabetes">Antidiabético oral</option>
+            <option value="beta">Beta-bloqueante</option>
+            <option value="anticoag">Anticoagulante</option>
+            <option value="antihist">Anti-histamínico</option>
+          </select>
+          <button class="btn" id="startBtn">Analisar</button>
+        </div>
+        <div class="qhint">Seleção para terapêutica crónica, ponderada sobre a lista atual e as comorbilidades nela sugeridas.</div>
+        <div class="advisor-out" id="startOut"></div>
+      </div>
+
+      <!-- antibiotics -->
+      <div class="panel">
+        <div class="panel-h"><h2>Antibioterapia</h2><span class="count">qual o mais seguro</span></div>
+        <div class="qrow">
+          <span class="qlabel">Este utente precisa de antibiótico:</span>
+          <select class="qsel" id="abxSel">
+            <option value="all">Comparar todas as classes</option>
+            <option value="Penicilinas">Penicilinas</option>
+            <option value="Quinolonas">Quinolonas</option>
+            <option value="Macrólidos">Macrólidos</option>
+          </select>
+          <button class="btn" id="abxBtn">Analisar</button>
+        </div>
+        <div class="advisor-out" id="abxOut"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p class="disc"><b>Protótipo de demonstração.</b> Base de interações e regras de seleção ilustrativas e não exaustivas, construídas a partir de farmacologia clássica bem documentada. Não substituem o juízo clínico, a verificação de alergias e contraindicações, nem as guidelines em vigor. Não se destina a uso clínico. Em produção, o motor liga-se a uma base de dados validada e versionada com revisão por farmacologia clínica, e pode receber a pergunta em texto livre através de uma camada de linguagem natural.</p>
+  </footer>
+
+</div>
+
+<!-- data.js (catálogo + base de conhecimento) tem de carregar antes de app.js -->
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
