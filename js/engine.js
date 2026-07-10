@@ -27,7 +27,7 @@ const PROP_LABELS = {
   trimetoprim: "trimetoprim", cyp2d6s: "substrato CYP2D6", dissulfiram: "reação dissulfiram com álcool",
   seroton_forte: "serotoninérgico (forte)", seroton_fraco: "serotoninérgico (fraco)",
   sulfonilureia: "sulfonilureia", ccb_nondhp: "BCC não di-hidropiridínico",
-  avnode: "deprime o nó AV", bbloq: "beta-bloqueante",
+  avnode: "deprime o nó AV", avnode_forte: "deprime o nó AV (potente)", bbloq: "beta-bloqueante",
   colinergico: "colinérgico", anticoag: "anticoagulante", avk: "antagonista da vit. K",
   antiagreg: "antiagregante", clopidogrel: "clopidogrel", aine: "AINE", gi: "risco de úlcera/GI",
   isrs_hemorr: "risco hemorrágico (ISRS)", inr_up: "aumenta o INR",
@@ -101,15 +101,19 @@ function analyze(subs) {
              "Vigiar eficácia; pode ser necessário ajustar a dose.");
 
       const sa = serLevel(A), sb = serLevel(B);
-      if (sa && sb)
-        push(sa === 2 && sb === 2 ? "major" : "moderate",
+      if (sa && sb) {
+        const ssev = sa === 2 && sb === 2 ? "major" : (sa + sb === 2 ? "minor" : "moderate");
+        push(ssev,
              "Dois agentes serotoninérgicos — risco de síndrome serotoninérgica.",
              "Evitar ou vigiar sinais de excesso serotoninérgico.");
+      }
 
-      if (both("bbloq", "ccb_nondhp"))
-        push("major", "Beta-bloqueante com BCC não di-hidropiridínico (verapamil/diltiazem) — bradicardia grave e bloqueio AV.",
-             "Evitar a associação.");
-      else if (same("avnode"))
+      const avA = A.p.includes("avnode") || A.p.includes("avnode_forte");
+      const avB = B.p.includes("avnode") || B.p.includes("avnode_forte");
+      if (same("avnode_forte") || both("avnode_forte", "bbloq"))
+        push("major", "Agentes dromotrópicos negativos potentes (verapamil/diltiazem/amiodarona ± beta-bloqueante) — bradicardia grave e bloqueio AV.",
+             "Evitar a associação; se inevitável, vigilância apertada de FC e ECG.");
+      else if (avA && avB)
         push("moderate", "Efeito aditivo na condução AV — bradicardia.",
              "Vigiar FC e ECG; cautela na titulação.");
 
@@ -127,6 +131,14 @@ function analyze(subs) {
       if (both("aine", "corticoide"))
         push("moderate", "AINE com corticosteroide — risco aumentado de úlcera e hemorragia gastrointestinal.",
              "Evitar a associação ou associar gastroproteção.");
+
+      // agente com risco GI (ex.: bifosfonato oral) + AINE — lesão da mucosa aditiva
+      // (exclui corticoide/antiagregante, já cobertos por regras acima)
+      const cortPair = A.p.includes("corticoide") || B.p.includes("corticoide");
+      const antiagPair = A.p.includes("antiagreg") || B.p.includes("antiagreg");
+      if (both("gi", "aine") && !cortPair && !antiagPair)
+        push("minor", "Agente com risco gastrointestinal (ex.: bifosfonato oral) associado a AINE — lesão aditiva da mucosa.",
+             "Precaução; ponderar gastroproteção e boa técnica de administração (bifosfonato: de pé, com água, em jejum).");
 
       if (both("inr_up", "avk"))
         push("moderate", "Potencia o efeito da varfarina (aumento do INR).",
@@ -233,7 +245,7 @@ function analyze(subs) {
         push("moderate", "Inibidor do CYP2C9 aumenta a sulfonilureia — risco de hipoglicemia.",
              "Reforçar a vigilância da glicemia; ponderar reduzir a dose.");
 
-      if (both("inr_down", "avk"))
+      if (both("inr_down", "avk") && !both("cyp3a4ind", "avk"))
         push("moderate", "Indutor enzimático reduz o efeito da varfarina (baixa o INR).",
              "Vigiar INR; pode ser necessário ajustar a dose.");
 
