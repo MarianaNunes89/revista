@@ -113,7 +113,7 @@ function analyze(subs) {
       if (same("avnode_forte") || both("avnode_forte", "bbloq"))
         push("major", "Agentes dromotrópicos negativos potentes (verapamil/diltiazem/amiodarona ± beta-bloqueante) — bradicardia grave e bloqueio AV.",
              "Evitar a associação; se inevitável, vigilância apertada de FC e ECG.");
-      else if (avA && avB)
+      else if (avA && avB && !both("digital", "pgpi"))
         push("moderate", "Efeito aditivo na condução AV — bradicardia.",
              "Vigiar FC e ECG; cautela na titulação.");
 
@@ -162,9 +162,14 @@ function analyze(subs) {
       if (both("colchicina", "pgpi") || both("colchicina", "cyp3a4i_forte") || both("colchicina", "cyp3a4i_mod"))
         push("major", "Colchicina com inibidor da P-gp/CYP3A4 — risco de toxicidade grave (potencialmente fatal na insuficiência renal).",
              "Evitar; se inevitável, reduzir muito a dose e vigiar.");
-      else if (both("pgpi", "pgps") && !cyp3a4Fired)
+      else if (both("pgpi", "pgps") && !cyp3a4Fired && !both("digital", "pgpi"))
         push("moderate", "Inibidor da P-gp aumenta os níveis do substrato (ex.: digoxina, DOAC).",
              "Ponderar redução de dose e vigiar.");
+
+      // digitálico + inibidor da P-gp: nó AV deprimido + ↑ níveis de digoxina (par de alto risco)
+      if (both("digital", "pgpi"))
+        push("major", "Digitálico com inibidor da P-gp (amiodarona, dronedarona, verapamil, diltiazem, claritromicina) — subida marcada dos níveis de digoxina e depressão do nó AV.",
+             "Reduzir a digoxina ~50 %; vigiar digoxinemia, FC e ECG.");
 
       if (both("opioide", "benzo"))
         push("major", "Opioide com benzodiazepina — depressão aditiva do SNC e respiratória.",
