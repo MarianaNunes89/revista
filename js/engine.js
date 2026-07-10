@@ -39,6 +39,7 @@ const PROP_LABELS = {
   anticol: "anticolinérgico", nitrato: "nitrato", pde5: "inibidor da PDE5",
   alfa1blq: "alfa-bloqueante", hipoglic: "risco de hipoglicemia",
   hipergli: "aumenta a glicemia", disglic: "disglicemia", fibrato: "fibrato", tca: "tricíclico",
+  sglt2: "inibidor do SGLT2 (gliflozina)",
   corticoide: "corticosteroide", valproato: "valproato (inibidor enzimático)",
   gabapentinoide: "gabapentinoide", fibrato_alto: "fibrato de alto risco (genfibrozil)",
   colchicina: "colchicina", carbamazepina: "carbamazepina", lamotrigina: "lamotrigina",
@@ -50,6 +51,7 @@ function analyze(subs) {
   const out = [];
   const has = p => subs.some(s => s.p.includes(p));
   const kdownList = has("kdown");                       // hipocaliemia agrava o QT
+  const hipoNa = subs.filter(s => s.p.includes("hiponatremia")).length; // carga de hiponatremia
   const qtLevel = s => s.p.includes("qt_known") ? 3
                      : s.p.includes("qt_possible") ? 2
                      : s.p.includes("qt_cond") ? 1 : 0;
@@ -148,9 +150,13 @@ function analyze(subs) {
         push("moderate", "Potencia o efeito da varfarina (aumento do INR).",
              "Vigiar INR durante e após a associação.");
 
-      if (same("hiponatremia"))
+      if (same("hiponatremia") && hipoNa < 3)
         push("moderate", "Risco aditivo de hiponatremia (ISRS/IRSN, tiazida/indapamida, carbamazepina) — sobretudo no idoso.",
              "Dosear o sódio 2 a 4 semanas após iniciar/ajustar; vigiar confusão e quedas.");
+
+      if (both("sglt2", "diur"))
+        push("moderate", "Gliflozina com diurético — depleção de volume aditiva (hipotensão, LRA pré-renal, síncope no idoso).",
+             "Vigiar volémia e função renal; regras de dia de doença (suspender em doença aguda).");
 
       if (same("kup"))
         push("major", "Risco de hipercaliemia (dois agentes que retêm potássio).",
@@ -280,6 +286,12 @@ function analyze(subs) {
     out.push({ a: "AINE + IECA/ARA + diurético", b: "",
       sev: "major", mech: "Triplo whammy — combinação nefrotóxica.",
       act: "Risco de lesão renal aguda; evitar o AINE e vigiar a função renal." });
+
+  // carga cumulativa de hiponatremia (>= 3 agentes) — risco de hiponatremia sintomática
+  if (hipoNa >= 3)
+    out.push({ a: "≥ 3 fármacos com risco de hiponatremia", b: "",
+      sev: "major", mech: "Risco cumulativo de hiponatremia sintomática (confusão, quedas, convulsões no idoso).",
+      act: "Dosear o sódio precocemente (3–7 dias); ponderar alternativas com menor risco." });
 
   // vários fármacos a afetar o INR em direções opostas
   if ((has("inr_up") || has("inr_up_forte")) && has("inr_down") && has("avk"))
