@@ -25,7 +25,9 @@ const PROP_LABELS = {
   tiopurina: "tiopurina", metotrexato: "metotrexato",
   quelacao_cationica: "absorção reduzida por catiões", catiao: "catião (ferro/cálcio)",
   trimetoprim: "trimetoprim", cyp2d6s: "substrato CYP2D6", dissulfiram: "reação dissulfiram com álcool",
-  seroton: "serotoninérgico", avnode: "deprime o nó AV", bbloq: "beta-bloqueante",
+  seroton_forte: "serotoninérgico (forte)", seroton_fraco: "serotoninérgico (fraco)",
+  sulfonilureia: "sulfonilureia", ccb_nondhp: "BCC não di-hidropiridínico",
+  avnode: "deprime o nó AV", bbloq: "beta-bloqueante",
   colinergico: "colinérgico", anticoag: "anticoagulante", avk: "antagonista da vit. K",
   antiagreg: "antiagregante", clopidogrel: "clopidogrel", aine: "AINE", gi: "risco de úlcera/GI",
   isrs_hemorr: "risco hemorrágico (ISRS)", inr_up: "aumenta o INR",
@@ -50,6 +52,8 @@ function analyze(subs) {
   const qtLevel = s => s.p.includes("qt_known") ? 3
                      : s.p.includes("qt_possible") ? 2
                      : s.p.includes("qt_cond") ? 1 : 0;
+  const serLevel = s => s.p.includes("seroton_forte") ? 2
+                      : s.p.includes("seroton_fraco") ? 1 : 0;
 
   for (let i = 0; i < subs.length; i++) {
     for (let j = i + 1; j < subs.length; j++) {
@@ -73,6 +77,7 @@ function analyze(subs) {
 
       // --- CYP3A4: inibidor por potência × substrato ---
       const colch = A.p.includes("colchicina") || B.p.includes("colchicina");
+      let cyp3a4Fired = true;
       if (both("cyp3a4i_forte", "estatina3a4"))
         push("major", "Inibidor potente do CYP3A4 com estatina metabolizada por essa via — risco de rabdomiólise.",
              "Contraindicado; suspender a estatina ou trocar (ex.: pravastatina/rosuvastatina).");
@@ -88,19 +93,25 @@ function analyze(subs) {
       else if (both("cyp3a4i_forte", "cyp3a4s") || both("cyp3a4i_mod", "cyp3a4s"))
         push("moderate", "Inibidor do CYP3A4 aumenta a exposição de um substrato dessa via.",
              "Ponderar redução de dose e vigiar.");
+      else cyp3a4Fired = false;
 
       if (both("cyp3a4ind", "estatina3a4") || both("cyp3a4ind", "cyp3a4s") ||
           both("cyp3a4ind", "cyp3a4s_estreito") || both("cyp3a4ind", "anticoag"))
         push("moderate", "Indutor do CYP3A4 reduz a exposição e a eficácia do fármaco associado.",
              "Vigiar eficácia; pode ser necessário ajustar a dose.");
 
-      if (same("seroton"))
-        push("major", "Dois agentes serotoninérgicos — risco de síndrome serotoninérgica.",
+      const sa = serLevel(A), sb = serLevel(B);
+      if (sa && sb)
+        push(sa === 2 && sb === 2 ? "major" : "moderate",
+             "Dois agentes serotoninérgicos — risco de síndrome serotoninérgica.",
              "Evitar ou vigiar sinais de excesso serotoninérgico.");
 
-      if (same("avnode"))
-        push("major", "Efeito aditivo na condução AV — bradicardia e bloqueio.",
-             "Evitar; vigiar FC e ECG.");
+      if (both("bbloq", "ccb_nondhp"))
+        push("major", "Beta-bloqueante com BCC não di-hidropiridínico (verapamil/diltiazem) — bradicardia grave e bloqueio AV.",
+             "Evitar a associação.");
+      else if (same("avnode"))
+        push("moderate", "Efeito aditivo na condução AV — bradicardia.",
+             "Vigiar FC e ECG; cautela na titulação.");
 
       if (both("colinergico", "avnode") || both("colinergico", "bbloq"))
         push("moderate", "Anticolinesterásico com agente bradicardizante — risco de bradicardia.",
@@ -123,8 +134,8 @@ function analyze(subs) {
 
       if (same("kup"))
         push("major", "Risco de hipercaliemia (dois agentes que retêm potássio).",
-             "Vigiar potássio e função renal.");
-      else if (both("kup", "aine"))
+             "Vigiar K+ e função renal (basal, 1 e 4 semanas). Em IC-FEr, IECA/ARA + antagonista da aldosterona é terapêutico sob vigilância (distinto de IECA+ARA, que é desaconselhado).");
+      else if (both("kup", "aine") && !(has("aine") && has("ieca_ara") && has("diur")))
         push("moderate", "AINE agrava a hipercaliemia e o risco renal.",
              "Vigiar potássio e creatinina.");
 
@@ -139,7 +150,7 @@ function analyze(subs) {
       if (both("colchicina", "pgpi") || both("colchicina", "cyp3a4i_forte") || both("colchicina", "cyp3a4i_mod"))
         push("major", "Colchicina com inibidor da P-gp/CYP3A4 — risco de toxicidade grave (potencialmente fatal na insuficiência renal).",
              "Evitar; se inevitável, reduzir muito a dose e vigiar.");
-      else if (both("pgpi", "pgps"))
+      else if (both("pgpi", "pgps") && !cyp3a4Fired)
         push("moderate", "Inibidor da P-gp aumenta os níveis do substrato (ex.: digoxina, DOAC).",
              "Ponderar redução de dose e vigiar.");
 
@@ -218,7 +229,7 @@ function analyze(subs) {
         push("moderate", "Inibidor do CYP1A2 aumenta a exposição do substrato (ex.: teofilina, tizanidina, olanzapina).",
              "Vigiar; ponderar redução de dose (tizanidina é contraindicada).");
 
-      if (both("cyp2c9i", "hipoglic"))
+      if (both("cyp2c9i", "sulfonilureia"))
         push("moderate", "Inibidor do CYP2C9 aumenta a sulfonilureia — risco de hipoglicemia.",
              "Reforçar a vigilância da glicemia; ponderar reduzir a dose.");
 
@@ -244,6 +255,12 @@ function analyze(subs) {
     out.push({ a: "AINE + IECA/ARA + diurético", b: "",
       sev: "major", mech: "Triplo whammy — combinação nefrotóxica.",
       act: "Risco de lesão renal aguda; evitar o AINE e vigiar a função renal." });
+
+  // vários fármacos a afetar o INR em direções opostas
+  if (has("inr_up") && has("inr_down") && has("avk"))
+    out.push({ a: "efeito sobre o INR", b: "",
+      sev: "moderate", mech: "Fármacos que aumentam e reduzem o INR em simultâneo — efeito líquido imprevisível.",
+      act: "Monitorizar o INR com maior frequência." });
 
   out.sort((x, y) => SEV_RANK[x.sev] - SEV_RANK[y.sev]);
   return out;
