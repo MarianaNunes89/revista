@@ -30,7 +30,8 @@ const PROP_LABELS = {
   avnode: "deprime o nó AV", avnode_forte: "deprime o nó AV (potente)", bbloq: "beta-bloqueante",
   colinergico: "colinérgico", anticoag: "anticoagulante", avk: "antagonista da vit. K",
   antiagreg: "antiagregante", clopidogrel: "clopidogrel", aine: "AINE", gi: "risco de úlcera/GI",
-  isrs_hemorr: "risco hemorrágico (ISRS)", inr_up: "aumenta o INR",
+  isrs_hemorr: "risco hemorrágico (ISRS)", inr_up: "aumenta o INR", inr_up_forte: "aumenta muito o INR",
+  hiponatremia: "risco de hiponatremia",
   kup: "retém potássio", kdown: "baixa o potássio", ieca_ara: "bloqueio do SRAA",
   diur: "diurético", litio: "lítio", digital: "digitálico",
   pgpi: "inibidor da P-gp", pgps: "substrato da P-gp",
@@ -140,9 +141,16 @@ function analyze(subs) {
         push("minor", "Agente com risco gastrointestinal (ex.: bifosfonato oral) associado a AINE — lesão aditiva da mucosa.",
              "Precaução; ponderar gastroproteção e boa técnica de administração (bifosfonato: de pé, com água, em jejum).");
 
-      if (both("inr_up", "avk"))
+      if (both("inr_up_forte", "avk"))
+        push("major", "Aumento potente do efeito da varfarina (ex.: metronidazol, fluconazol, cotrimoxazol, amiodarona) — risco hemorrágico.",
+             "Vigiar INR aos 3–5 dias; ponderar reduzir a dose da varfarina.");
+      else if (both("inr_up", "avk"))
         push("moderate", "Potencia o efeito da varfarina (aumento do INR).",
              "Vigiar INR durante e após a associação.");
+
+      if (same("hiponatremia"))
+        push("moderate", "Risco aditivo de hiponatremia (ISRS/IRSN, tiazida/indapamida, carbamazepina) — sobretudo no idoso.",
+             "Dosear o sódio 2 a 4 semanas após iniciar/ajustar; vigiar confusão e quedas.");
 
       if (same("kup"))
         push("major", "Risco de hipercaliemia (dois agentes que retêm potássio).",
@@ -274,7 +282,7 @@ function analyze(subs) {
       act: "Risco de lesão renal aguda; evitar o AINE e vigiar a função renal." });
 
   // vários fármacos a afetar o INR em direções opostas
-  if (has("inr_up") && has("inr_down") && has("avk"))
+  if ((has("inr_up") || has("inr_up_forte")) && has("inr_down") && has("avk"))
     out.push({ a: "efeito sobre o INR", b: "",
       sev: "moderate", mech: "Fármacos que aumentam e reduzem o INR em simultâneo — efeito líquido imprevisível.",
       act: "Monitorizar o INR com maior frequência." });
