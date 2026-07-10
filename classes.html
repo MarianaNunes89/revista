@@ -121,8 +121,48 @@ const ACUTO_PREFIX = ["M01A", "J01", "J02", "N02CC", "P01AB", "M04AC"];
 const isAcuto = s => ACUTO_PREFIX.some(p => (s.atcCls||"").startsWith(p));
 const WARN_SVG = `<span class="warn" title="Fármaco tipicamente de uso agudo/pontual — não habitual como medicação crónica. Rever indicação e duração." aria-label="Rever: uso tipicamente agudo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>`;
 
-/* nome curto da classe para a lista (tira o qualificador entre parêntesis) */
-const shortCls = c => (c||"").replace(/\s*\(.*?\)\s*/g, "").trim();
+/* ===== etiquetas de classe para leitura rápida (singular, fundidas) ===== */
+/* nome do grupo ATC (override do que vem do catálogo) */
+const GRUPO_LBL = { A: "Tubo gastrointestinal e metabolismo" };
+const grupoNome = g => GRUPO_LBL[g] || GRUPOS[g];
+
+/* etiqueta por código de classe ATC */
+const CLS_LABEL = {
+  A02BA:"Antagonista H2", A02BC:"IBP", A03FA:"Procinético", A06AD:"Laxante osmótico",
+  A07EC:"Aminossalicilato", A10A:"Insulina", A10BA:"Biguanida", A10BB:"Sulfonilureia",
+  A10BH:"Gliptina", A10BJ:"Agonista GLP-1", A10BK:"Gliflozina", A11CC:"Vitamina D",
+  B01AA:"Antagonista da vitamina K", B01AB:"Heparina BPM", B01AC:"Antiagregante",
+  B01AE:"Inibidor direto da trombina", B01AF:"Inibidor do fator Xa", B03A:"Ferro",
+  B03B:"Vitamina B12/ácido fólico",
+  C01AA:"Digitálico", C01BC:"Antiarrítmico classe Ic", C01BD:"Antiarrítmico classe III",
+  C01DA:"Nitrato", C03AA:"Tiazida", C03CA:"Diurético de ansa",
+  C03DA:"Diurético poupador de potássio", C07AA:"Beta-bloqueante não seletivo",
+  C07AB:"Beta-bloqueante cardiosseletivo", C07AG:"Beta-bloqueante com bloqueio alfa",
+  C08CA:"BCC di-hidropiridínico", C08DA:"BCC não di-hidropiridínico", C09AA:"IECA",
+  C09CA:"ARA", C10AA:"Estatina", C10AB:"Fibrato", C10AX:"Outro modificador lipídico",
+  G04BE:"Inibidor da PDE5", G04CA:"Alfa-bloqueante", G04CB:"Inibidor da 5-alfa-redutase",
+  H02AB:"Corticosteroide sistémico", H03AA:"Hormona tiroideia", H03BB:"Antitiroideu",
+  J01AA:"Tetraciclina", J01CA:"Penicilina de largo espectro", J01CF:"Penicilina antiestafilocócica",
+  J01CR:"Penicilina + inibidor β-lactamase", J01DC:"Cefalosporina 2.ª geração",
+  J01DD:"Cefalosporina 3.ª geração", J01EE:"Cotrimoxazol", J01FA:"Macrólido",
+  J01FF:"Lincosamida", J01MA:"Fluoroquinolona", J01XE:"Nitrofurantoína",
+  J02AC:"Antifúngico azólico", J05AB:"Antiviral (herpes)",
+  L01BA:"Metotrexato", L04AX:"Tiopurina",
+  M01AB:"AINE", M01AC:"AINE", M01AE:"AINE", M01AH:"AINE iCOX-2",
+  M04AA:"Inibidor da xantina-oxidase", M04AC:"Colchicina", M05BA:"Bifosfonato",
+  N02AA:"Opioide", N02AB:"Opioide", N02AX:"Opioide", N02BE:"Paracetamol", N02CC:"Triptano",
+  N03AF:"Carbamazepina", N03AG:"Valproato", N03AX:"Outro antiepilético", N04BA:"Levodopa",
+  N05AD:"Antipsicótico", N05AH:"Antipsicótico", N05AX:"Antipsicótico", N05AN:"Lítio",
+  N05BA:"Benzodiazepina", N05BB:"Anti-histamínico sedativo", N05CF:"Hipnótico Z",
+  N06AA:"Tricíclico", N06AB:"ISRS", N06AX:"Outro antidepressivo", N06DA:"Anticolinesterásico",
+  P01AB:"Metronidazol",
+  R03AC:"Broncodilatador β2", R03BA:"Corticosteroide inalado", R03BB:"Anticolinérgico inalado",
+  R03DC:"Antileucotrieno", R06AA:"Anti-histamínico 1.ª geração",
+  R06AE:"Anti-histamínico 2.ª geração", R06AX:"Anti-histamínico 2.ª geração",
+};
+/* override por substância (ATC5) — separar IRSN do saco "outros antidepressivos" */
+const SUB_LABEL = { N06AX16:"IRSN", N06AX21:"IRSN" };  // venlafaxina, duloxetina
+const dispClass = s => SUB_LABEL[s.a] || CLS_LABEL[s.atcCls] || (s.cls||"").replace(/\s*\(.*?\)\s*/g,"").trim();
 
 const inList = a => patient.some(s => s.a === a);
 function addByAtc(a){ const s=INDEX.find(x=>x.a===a); if(s && !inList(a)){ patient.push(s); render(); } }
@@ -135,7 +175,7 @@ function render(){
   patient.forEach(s => {
     const row = document.createElement("div"); row.className = "med";
     row.innerHTML = `<span class="body"><span class="name">${s.d}${isAcuto(s)?WARN_SVG:""}</span>
-      <span class="clsline">${shortCls(s.cls)}</span></span>
+      <span class="clsline">${dispClass(s)}</span></span>
       <button class="rm" title="Remover" data-a="${s.a}">×</button>`;
     ml.appendChild(row);
   });
@@ -198,25 +238,30 @@ acInput.addEventListener("keydown", e=>{
   else if(e.key==="Escape"){acList.classList.remove("show");}
 });
 
-/* ===== explorar por classe ===== */
+/* ===== explorar por classe (agrupado pela etiqueta de leitura) ===== */
 const clsSel = $("#clsSel");
+/* etiqueta -> { g: grupo, subs: [substâncias] } */
+const DISPLAY_CLASSES = {};
+INDEX.forEach(s => {
+  const lbl = dispClass(s);
+  (DISPLAY_CLASSES[lbl] = DISPLAY_CLASSES[lbl] || { g:s.grupo, subs:[] }).subs.push(s);
+});
 (function fillClasses(){
   const byGroup = {};
-  CATALOG.forEach(c => (byGroup[c.g] = byGroup[c.g]||[]).push(c));
+  Object.keys(DISPLAY_CLASSES).forEach(lbl => (byGroup[DISPLAY_CLASSES[lbl].g] = byGroup[DISPLAY_CLASSES[lbl].g]||[]).push(lbl));
   let html = `<option value="">Selecionar classe…</option>`;
   Object.keys(byGroup).sort().forEach(g => {
-    html += `<optgroup label="${g} — ${GRUPOS[g]}">`;
-    byGroup[g].forEach(c => html += `<option value="${c.c}">${c.n}</option>`);
+    html += `<optgroup label="${g} — ${grupoNome(g)}">`;
+    byGroup[g].sort((a,b)=>a.localeCompare(b,"pt")).forEach(lbl => html += `<option value="${lbl}">${lbl}</option>`);
     html += `</optgroup>`;
   });
   clsSel.innerHTML = html;
 })();
 clsSel.addEventListener("change", renderClassMembers);
 function renderClassMembers(){
-  const box = $("#clsMembers"); const code = clsSel.value;
-  if(!code){ box.innerHTML=""; return; }
-  const c = CATALOG.find(x => x.c === code);
-  box.innerHTML = c.s.map(s => {
+  const box = $("#clsMembers"); const lbl = clsSel.value;
+  if(!lbl || !DISPLAY_CLASSES[lbl]){ box.innerHTML=""; return; }
+  box.innerHTML = DISPLAY_CLASSES[lbl].subs.slice().sort((a,b)=>a.d.localeCompare(b.d,"pt")).map(s => {
     const on = inList(s.a);
     return `<div class="clsmember"><span class="t">${s.d}</span>
       <button class="add" data-a="${s.a}" ${on?"disabled":""}>${on?"na lista":"+ adicionar"}</button></div>`;
