@@ -19,8 +19,8 @@ const cat = readFileSync(join(root, "js/catalog.js"), "utf8");
 const eng = readFileSync(join(root, "js/engine.js"), "utf8")
   .replace(/if \(typeof module[\s\S]*$/, "");   // tirar o guard de export
 
-const { CATALOG, analyze } = new Function(
-  `${cat}\n${eng}\nreturn { CATALOG, analyze };`
+const { CATALOG, analyze, RULE_META, RULEBASE } = new Function(
+  `${cat}\n${eng}\nreturn { CATALOG, analyze, RULE_META, RULEBASE };`
 )();
 
 /* --- utilitários --- */
@@ -53,6 +53,53 @@ const sevMech = (nomes, a, b, inicioMech) => {
     ((x.a === a && x.b === b) || (x.a === b && x.b === a)) && x.mech.startsWith(inicioMech));
   return f ? f.sev : null;
 };
+
+/* ===================================================================
+   PROVENIÊNCIA — nenhuma regra pode existir sem fonte e nível de evidência.
+   Este bloco é o que torna a base defensável perante um farmacologista
+   ou um regulador. Se falhar, alguém acrescentou uma regra sem a sustentar.
+   =================================================================== */
+const NIVEIS = ["consenso", "provável", "incerto"];
+
+test("proveniência: a base de regras tem versão e data", () => {
+  assert.match(RULEBASE.version, /^\d+\.\d+\.\d+$/);
+  assert.match(RULEBASE.date, /^\d{4}-\d{2}-\d{2}$/);
+});
+
+test("proveniência: toda a regra do motor tem fonte e nível de evidência", () => {
+  const ids = [...new Set([
+    ...eng.matchAll(/push\("([a-z0-9_]+)"/g),
+    ...eng.matchAll(/id: "([a-z0-9_]+)"/g),
+  ].map(m => m[1]))];
+  assert.ok(ids.length >= 40, "esperava pelo menos 40 regras identificadas");
+  const semMeta = ids.filter(i => !RULE_META[i]);
+  assert.deepEqual(semMeta, [], `regras sem proveniência: ${semMeta.join(", ")}`);
+});
+
+test("proveniência: não há metadados órfãos (regra removida, fonte esquecida)", () => {
+  const ids = new Set([
+    ...eng.matchAll(/push\("([a-z0-9_]+)"/g),
+    ...eng.matchAll(/id: "([a-z0-9_]+)"/g),
+  ].map(m => m[1]));
+  const orfas = Object.keys(RULE_META).filter(k => !ids.has(k));
+  assert.deepEqual(orfas, [], `metadados sem regra: ${orfas.join(", ")}`);
+});
+
+test("proveniência: os níveis de evidência são do vocabulário permitido", () => {
+  for (const [id, m] of Object.entries(RULE_META)) {
+    assert.ok(m.src && m.src.length > 3, `regra ${id} sem fonte`);
+    assert.ok(NIVEIS.includes(m.ev), `regra ${id} com nível inválido: ${m.ev}`);
+  }
+});
+
+test("proveniência: a fonte viaja com o achado, não fica num documento ao lado", () => {
+  const f = analyze(lista("Claritromicina", "Sinvastatina"))
+    .find(x => x.id === "cyp3a4_estatina");
+  assert.equal(f.sev, "major");
+  assert.match(f.src, /FDA/);
+  assert.equal(f.ev, "consenso");
+  assert.equal(f.rulebase, RULEBASE.version);
+});
 
 /* ===================================================================
    Catálogo
