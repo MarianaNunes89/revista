@@ -451,7 +451,8 @@ function simular(cand){
 }
 
 const startSel = $("#startSel");
-(function fillStart(){
+/* NOTA: só pode correr depois de DISPLAY_CLASSES existir — é chamada no fim do script. */
+function fillStart(){
   const byGroup = {};
   Object.keys(DISPLAY_CLASSES).forEach(l => (byGroup[DISPLAY_CLASSES[l].g] = byGroup[DISPLAY_CLASSES[l].g]||[]).push(l));
   let html = `<option value="">Selecionar a classe a iniciar…</option>`;
@@ -461,7 +462,7 @@ const startSel = $("#startSel");
     html += `</optgroup>`;
   });
   startSel.innerHTML = html;
-})();
+}
 startSel.addEventListener("change", renderStart);
 
 const VERD = { preferir:"Preferir", cautela:"Cautela", evitar:"Evitar" };
@@ -657,6 +658,7 @@ function bind(){
   document.querySelectorAll(".rm").forEach(b => b.onclick = ()=>removeByAtc(b.dataset.a));
 }
 
+fillStart();   // depende de DISPLAY_CLASSES — tem de vir depois da secção "explorar por classe"
 render();
 </script>
 </body>
