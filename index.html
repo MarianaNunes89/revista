@@ -44,14 +44,17 @@
   .hidden{display:none}
   .listnote{padding:14px 18px 0;font-family:"IBM Plex Mono",monospace;font-size:10px;
     letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-  /* contexto do doente: TFG */
-  .tfgrow{display:flex;align-items:center;gap:9px;flex-wrap:wrap;
-    padding:12px 14px;border-bottom:1px solid var(--line-soft);background:var(--paper)}
-  .tfgrow label{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
+  /* contexto do doente — secundário: discreto, no fim do painel, desligado por omissão */
+  .drcrow{padding:12px 14px 14px;border-top:1px solid var(--line-soft)}
+  .drctick{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--muted)}
+  .drctick input{width:15px;height:15px;accent-color:var(--petrol);cursor:pointer;margin:0}
+  .drctick:hover span{color:var(--ink)}
+  .drcbody{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:11px;padding-left:23px}
+  .drcbody label{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--muted)}
-  .tfgrow input{width:74px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;
+  .drcbody input{width:74px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;
     font-family:"Inter",sans-serif;font-size:14px;font-weight:600;color:var(--ink);background:#fff}
-  .tfgrow input:focus{outline:2px solid var(--petrol);outline-offset:-1px}
+  .drcbody input:focus{outline:2px solid var(--petrol);outline-offset:-1px}
   .tfgunit{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted)}
   .tfghint{flex:1 0 100%;font-size:11px;color:var(--muted)}
   /* selo TFG aceso: o ajuste aplica-se MESMO a este doente */
@@ -90,12 +93,6 @@
     <!-- LEFT -->
     <div class="panel">
       <div class="panel-h"><h2>Medicação do utente</h2><span class="count" id="medCount">0</span></div>
-      <div class="tfgrow">
-        <label for="tfgInput">TFG</label>
-        <input id="tfgInput" type="number" min="1" max="150" step="1" placeholder="—" inputmode="numeric">
-        <span class="tfgunit">mL/min/1,73m²</span>
-        <span class="tfghint" id="tfgHint">opcional — filtra os ajustes que se aplicam a este doente</span>
-      </div>
       <div class="meds" id="medList"></div>
       <div class="addrow">
         <label for="acInput">Adicionar por nome</label>
@@ -107,17 +104,24 @@
         <select class="qsel" id="clsSel" style="width:100%"></select>
         <div class="clsmembers" id="clsMembers"></div>
       </div>
+
+      <!-- contexto do doente: opcional, discreto, fora do fluxo principal -->
+      <div class="drcrow">
+        <label class="drctick">
+          <input type="checkbox" id="drcTick">
+          <span>Utente com doença renal crónica?</span>
+        </label>
+        <div class="drcbody hidden" id="drcBody">
+          <label for="tfgInput">TFG</label>
+          <input id="tfgInput" type="number" min="1" max="150" step="1" placeholder="—" inputmode="numeric">
+          <span class="tfgunit">mL/min/1,73m²</span>
+          <span class="tfghint" id="tfgHint">introduza a TFG para ver quais os fármacos a ajustar</span>
+        </div>
+      </div>
     </div>
 
     <!-- RIGHT -->
     <div class="rightcol">
-
-      <!-- ajustes renais acionados pela TFG deste doente -->
-      <div class="panel hidden" id="renalPanel">
-        <div class="panel-h"><h2>Ajuste à função renal</h2><span class="count" id="renalCount">·</span></div>
-        <div class="findings" id="renalBox"></div>
-      </div>
-
       <div class="panel">
         <div class="panel-h">
           <h2>Interações encontradas</h2>
@@ -145,6 +149,12 @@
           <div class="findings" id="mxDetail"></div>
           <div class="findings" id="mxList"></div>
         </div>
+      </div>
+
+      <!-- secundário: só aparece se o utente tiver DRC e houver TFG -->
+      <div class="panel hidden" id="renalPanel">
+        <div class="panel-h"><h2>Ajuste à função renal</h2><span class="count" id="renalCount">·</span></div>
+        <div class="findings" id="renalBox"></div>
       </div>
     </div>
 
@@ -251,16 +261,20 @@ const RENAL = {
   R06AE09:{lim:50, txt:"Reduzir a dose se TFG < 50."},
   R06AX26:{lim:60, txt:"Reduzir a dose na insuficiência renal."},
 };
-/* TFG do utente (mL/min/1,73m²). null = desconhecida. */
-let tfg = null;
+/* ===== contexto do doente (SECUNDÁRIO) =====
+   O produto é o cruzamento de interações. O rim é contexto: por omissão está
+   desligado e não gera um único pixel. Só quem marca "utente com DRC" o liga. */
+let drc = false;      // o utente tem doença renal crónica?
+let tfg = null;       // TFG em mL/min/1,73m² (null = por introduzir)
 
 /** "none" | "unknown" | "active" | "inactive"
- *  active   — a TFG do doente aciona o ajuste → é uma DECISÃO
- *  inactive — o fármaco exige ajuste, mas não a esta TFG → silêncio, não ruído
- *  unknown  — TFG não introduzida → mostra o selo, mas não decide por ele        */
+ *  none     — sem DRC assinalada, ou fármaco sem ajuste → nada aparece
+ *  unknown  — DRC assinalada mas sem TFG → sinaliza o fármaco, não decide por ele
+ *  active   — a TFG deste doente aciona o ajuste → é uma DECISÃO
+ *  inactive — o fármaco exige ajuste, mas não a esta TFG → silêncio, não ruído   */
 function renalState(s){
   const r = RENAL[s.a];
-  if(!r) return "none";
+  if(!r || !drc) return "none";
   if(tfg === null) return "unknown";
   if(r.hi && tfg > r.hi) return "active";      // ex.: edoxabano com TFG > 95
   return tfg <= r.lim ? "active" : "inactive";
@@ -358,7 +372,7 @@ function render(){
 function renderRenal(){
   const panel = $("#renalPanel"), box = $("#renalBox");
   const ativos = renalAtivos();
-  const mostrar = tfg !== null && patient.length > 0;
+  const mostrar = drc && tfg !== null && patient.length > 0;
   panel.classList.toggle("hidden", !mostrar);
   if(!mostrar) return;
 
@@ -381,13 +395,19 @@ function renderRenal(){
   });
 }
 
-/* campo da TFG — transforma os selos de informação em decisão */
-const tfgInput = $("#tfgInput");
+/* contexto do doente — só liga se o médico o assinalar */
+const drcTick = $("#drcTick"), tfgInput = $("#tfgInput");
+drcTick.addEventListener("change", () => {
+  drc = drcTick.checked;
+  $("#drcBody").classList.toggle("hidden", !drc);
+  if(!drc){ tfgInput.value = ""; tfg = null; }
+  render();
+});
 tfgInput.addEventListener("input", () => {
   const v = parseInt(tfgInput.value, 10);
   tfg = (Number.isFinite(v) && v > 0 && v <= 150) ? v : null;
   $("#tfgHint").textContent = tfg === null
-    ? "opcional — filtra os ajustes que se aplicam a este doente"
+    ? "introduza a TFG para ver quais os fármacos a ajustar"
     : `a mostrar apenas os ajustes que se aplicam com TFG ${tfg}`;
   render();
 });
