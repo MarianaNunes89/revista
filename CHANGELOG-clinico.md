@@ -5,8 +5,9 @@ catálogo por classes (`data/build_catalogo.py` → `js/catalog.js`), decorrente
 ciclo de revisão baseada em evidência (validação por PubMed / Stockley's / RCM /
 CredibleMeds / guidelines, com aplicação e teste local antes de cada publicação).
 
-Estado atual: **92 classes, 195 substâncias, ~40 regras de mecanismo.** Ilustrativo
-e não exaustivo; não substitui o juízo clínico nem se destina a uso clínico direto.
+Estado atual: **92 classes, 194 substâncias, ~40 regras de mecanismo, 63 alertas de ajuste
+renal.** Ilustrativo e não exaustivo; não substitui o juízo clínico nem se destina a uso
+clínico direto.
 
 ---
 
@@ -158,6 +159,36 @@ no catálogo (o par digoxina + claritromicina dispara maior via `digital`+`pgpi`
 
 ---
 
+## Ronda renal — alertas de ajuste à função renal (selo "TFG")
+
+Mecanismo novo, fora do motor de interações: um selo **TFG** por substância, com limiar e
+conduta concretos. Distingue-se do triângulo de uso agudo **pela forma**, não pela cor.
+
+Primeira versão: 57 alertas. Validação clínica: **45 corretos · 11 corrigidos · 1 removido ·
+7 acrescentados** → **63 alertas** sobre um catálogo de **194 substâncias**.
+
+A espinha de segurança estava correta à partida (contraindicações dos DOAC, metformina,
+metotrexato, colchicina, bifosfonatos, glibenclamida). As correções foram de **precisão
+numérica** e de **redução de ruído**, não erros perigosos.
+
+| Ação | Alteração |
+|---|---|
+| Remover | **Ranitidina** retirada do catálogo (retirada do mercado em 2020, NDMA) — alerta sobre fármaco inexistente é ruído puro |
+| Corrigir limiar | **Metoclopramida** < 60 → **< 40** (a restrição dominante é a duração ≤ 5 dias, EMA 2013); **oxicodona** < 60 → **< 30** |
+| Corrigir por indicação | **Gliflozinas** — a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (DAPA-CKD, EMPA-KIDNEY, CREDENCE; KDIGO 2022). Não suspender por TFG baixa se a indicação for nefroproteção |
+| Completar números | **Digoxina** (manutenção 0,0625–0,125 mg/dia; alvo 0,5–0,9 ng/mL) · **enoxaparina** (1 mg/kg 1×/dia se TFG < 30) · **edoxabano** (evitar também se TFG > 95 — eficácia reduzida na FA) · **tiopurinas** (~25 % se TFG < 30, mas o determinante maior é o TPMT/NUDT15) · **alopurinol** (titular pela uricemia; o "teto renal" de Hande está desatualizado, ACR 2020) |
+| Clarificar | **Topiramato** — redução de 50 %, não suspensão |
+| Acrescentar | **Fenofibrato** (< 60 reduzir, < 30 evitar) · **venlafaxina** · **HCTZ** e **indapamida** (ineficazes < 30) · **bisoprolol** · **sulfassalazina** · **fexofenadina** |
+| Reclassificar risco | **Gabapentina** e **pregabalina** Médio → **Alto** (100 % renais; depressão respiratória com opioides) |
+| Confirmado sem ação | Exclusão da **linagliptina** (excreção biliar, < 5 % renal — não requer ajuste) |
+
+Divergências entre fontes, resolvidas: **nitrofurantoína** — contraindicada < 45 (BNF/RCM; o
+racional é a ineficácia urinária, não só a toxicidade), com a nota de que um curso curto até
+TFG 30 é defensável na cistite não complicada. **Metformina** — segue o relabel por eGFR
+(FDA/EMA 2016), não o critério antigo por creatinina.
+
+---
+
 ## Incertezas residuais (para validação por farmacologia clínica)
 
 Direção consensual, limiar/magnitude a confirmar antes de qualquer validação:
@@ -166,6 +197,10 @@ Direção consensual, limiar/magnitude a confirmar antes de qualquer validação
 - Severidade **gliflozina + diurético** (moderada vs menor) — evidência observacional.
 - Magnitude do par **bifosfonato + AINE** (mantido menor) — dados observacionais inconsistentes.
 - Fronteira **forte/fraco** na serotonina (tramadol como forte; trazodona/tapentadol como fraco).
+- **Ajuste renal das tiopurinas** — fraco face ao peso do TPMT/NUDT15 como determinante de toxicidade.
+- **Nitrofurantoína** — limiar de curso curto (< 45 vs < 30).
+- **Metoclopramida** e **oxicodona** — limiares reclassificados (< 40 e < 30), a confirmar.
+- **Gabapentinoides** — reclassificados como alto risco (a confirmar a magnitude).
 
 ## Fora do âmbito do motor (pertencem à conduta, não a novas regras)
 
