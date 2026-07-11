@@ -14,19 +14,22 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Correr os testes do motor de interações
         run: node --test
 
+      # O js/catalog.js é GERADO por data/build_catalogo.py.
+      # Se alguém o editar à mão (ou publicar um sem publicar a fonte),
+      # este passo apanha a dessincronização.
       - name: Verificar que o catálogo gerado está em dia
         run: |
-          python3 -m pip install --quiet --break-system-packages openpyxl || true
-          cd data && python3 build_catalogo.py
-          cd ..
+          set -euo pipefail
+          python3 data/build_catalogo.py
           if ! git diff --quiet -- js/catalog.js; then
-            echo "::error::js/catalog.js está desatualizado — corra 'python3 data/build_catalogo.py' e faça commit do resultado."
+            echo "::error::js/catalog.js está dessincronizado da sua fonte (data/build_catalogo.py)."
+            echo "Corra 'python3 data/build_catalogo.py' e faça commit do js/catalog.js resultante."
             git diff --stat -- js/catalog.js
             exit 1
           fi
-          echo "catalog.js está em dia."
+          echo "catalog.js está em dia com a sua fonte."
