@@ -2,91 +2,99 @@
 
 **O copiloto que lê a lista toda.** Protótipo de análise de interações medicamentosas e apoio à prescrição para o utente polimedicado, pensado para Medicina Geral e Familiar.
 
-Ao contrário dos verificadores clássicos, que analisam um par de fármacos de cada vez, a Revista lê a **lista inteira** do utente, cruza **todos os pares** e fundamenta a próxima escolha de prescrição sobre essa lista real.
+Ao contrário dos verificadores clássicos, que analisam um par de fármacos de cada vez, a Revista lê a **lista inteira** do utente e cruza **todos os pares** — mais os achados que só existem ao nível da lista (triplo whammy, carga de hiponatremia, conflito de INR).
 
-> ⚠️ **Aviso.** Isto é um protótipo de demonstração. A base de interações e as regras de seleção são ilustrativas e não exaustivas, construídas a partir de farmacologia clássica bem documentada. **Não se destina a uso clínico** e não substitui o juízo clínico, a verificação de alergias e contraindicações, nem as guidelines em vigor.
+**Site:** https://mariananunes89.github.io/revista/
 
----
-
-## O que faz
-
-- **Matriz de interações** — cruza todos os `n(n−1)/2` pares da medicação e mostra a severidade de cada um (maior / moderada / menor).
-- **Interações encontradas** — para cada par, o mecanismo farmacológico e a conduta clínica sugerida.
-- **Advisor de prescrição** — dado o perfil atual do utente, ordena as opções mais seguras para: iniciar uma medicação crónica (antidiabético, beta-bloqueante, anticoagulante, anti-histamínico) e escolher a antibioterapia.
+> ⚠️ **Aviso.** Protótipo de demonstração. O catálogo e as regras são ilustrativos e não exaustivos. **Não se destina a uso clínico** e não substitui o juízo clínico, a verificação de alergias e contraindicações, nem as guidelines em vigor.
 
 ---
 
-## Estrutura do projeto
+## Como funciona
+
+O motor **não** tem regras par-a-par (não escalam: 194 substâncias = ~18.000 pares). Em vez disso:
+
+1. Cada substância do catálogo traz **propriedades de mecanismo** (`qt_known`, `cyp3a4i_forte`, `seroton_forte`, `avnode_forte`, `kup`, `hiponatremia`, …).
+2. Cerca de **40 regras genéricas** disparam quando duas propriedades se cruzam.
+
+Um punhado de regras cobre assim milhares de pares. A severidade é **graduada**, não binária — foi o trabalho de 8 rondas de revisão clínica (ver [`CHANGELOG-clinico.md`](CHANGELOG-clinico.md)).
+
+Além das interações, a lista sinaliza dois avisos por fármaco, **distintos pela forma, não pela cor**:
+
+- **⚠ triângulo âmbar** — fármaco tipicamente de uso agudo/pontual, não habitual como medicação crónica (critérios STOPP).
+- **selo `TFG`** — requer ajuste à função renal, com limiar e conduta concretos.
+
+### Acessibilidade
+
+A severidade nunca depende só da cor (WCAG 1.4.1): é codificada **três vezes** — texto (Maior/Moderada/Menor), contagem de pontos (●●● / ●● / ●) e padrão da barra (sólida / tracejada / pontilhada). A paleta evita a tríade vermelho-laranja-amarelo, que colapsa na deuteranopia.
+
+---
+
+## Estrutura
 
 ```
 revista/
-├── index.html          # estrutura da página
-├── css/
-│   └── styles.css       # todo o estilo
+├── index.html                  # a aplicação (página única)
+├── classes.html                # reencaminha para index.html (link antigo)
+├── css/styles.css
 ├── js/
-│   ├── data.js          # base de conhecimento: catálogo de fármacos + regras de interação
-│   └── app.js           # motor de análise + interface
-├── .github/
-│   └── workflows/
-│       └── deploy.yml   # publicação automática no GitHub Pages
-├── LICENSE
-└── README.md
+│   ├── catalog.js              # GERADO — não editar à mão
+│   └── engine.js               # motor de regras por mecanismo
+├── data/
+│   ├── build_catalogo.py       # FONTE DE VERDADE do catálogo → gera js/catalog.js
+│   ├── build_revisao.py        # gera a folha de revisão das interações
+│   ├── build_revisao_renal.py  # gera a folha de revisão dos alertas renais
+│   └── catalogo.json | .md     # saídas legíveis
+├── tests/engine.test.mjs       # 32 testes do motor
+├── CHANGELOG-clinico.md        # registo das rondas de revisão + incertezas residuais
+└── METODO-revisao-clinica.md   # o método de validação, reutilizável
 ```
 
-A separação entre `data.js` (conhecimento clínico) e `app.js` (lógica) é propositada: em produção, a camada de dados é substituída por uma base validada e versionada sem tocar no motor.
+> **`js/catalog.js` é gerado.** Nunca o edites à mão — edita `data/build_catalogo.py` e regenera. O workflow de CI falha se o ficheiro gerado estiver dessincronizado da sua fonte.
 
 ---
 
-## Como correr localmente
+## Desenvolvimento
 
-Não há passo de compilação nem dependências. Duas opções:
+Não há passo de compilação nem dependências para correr o site.
 
-1. **A mais simples** — abrir o ficheiro `index.html` diretamente no browser (duplo clique).
-2. **Com um servidor local** (recomendado, evita restrições de alguns browsers):
-   ```bash
-   # com Python (já vem instalado na maioria dos sistemas)
-   python3 -m http.server 8000
-   # depois abrir http://localhost:8000 no browser
-   ```
+```bash
+# correr localmente
+python3 -m http.server 8000     # depois abrir http://localhost:8000
 
----
+# correr os testes do motor (Node 18+)
+node --test
 
-## Como pôr isto no GitHub (passo a passo)
+# regenerar o catálogo depois de mexer em build_catalogo.py
+cd data && python3 build_catalogo.py
+```
 
-Se já não mexes no GitHub há algum tempo, o caminho mais simples é pela **interface web**, sem linha de comandos:
+Os testes cobrem as decisões clínicas validadas: se um deles quebrar, é uma regressão real, não um detalhe. Cada caso remete para uma ronda documentada no changelog.
 
-1. Vai a [github.com](https://github.com) e faz login (ou cria conta).
-2. Carrega no **+** no canto superior direito → **New repository**.
-3. Dá-lhe um nome (ex.: `revista`), deixa **Public**, e cria o repositório (**não** adiciones README, para não haver conflito com este).
-4. Na página do repositório vazio, carrega em **uploading an existing file**.
-5. Arrasta para lá **o conteúdo desta pasta** (`index.html`, a pasta `css`, a pasta `js`, `LICENSE`, `README.md`). O upload web mantém as subpastas.
-6. Carrega em **Commit changes**.
+### Adicionar um fármaco
 
-### Ativar o site live (GitHub Pages)
+Editar a lista `CLASSES` em `data/build_catalogo.py` (código ATC + DCI), atribuir-lhe as propriedades de mecanismo (via `PROPS` da classe, ou `OVERR` para exceções por substância), regenerar o catálogo e correr os testes.
 
-Este repositório já inclui um workflow que publica o site automaticamente. Depois do upload:
+### Adicionar uma regra de interação
 
-1. No repositório, vai a **Settings** → **Pages** (menu lateral).
-2. Em **Build and deployment → Source**, escolhe **GitHub Actions**.
-3. Feito. A cada alteração que faças, o site é republicado sozinho. Encontras o link em **Settings → Pages** (algo como `https://o-teu-utilizador.github.io/revista/`).
-
-> Se preferires a linha de comandos, o fluxo é o habitual: `git init`, `git add .`, `git commit -m "primeira versão"`, `git branch -M main`, `git remote add origin <url>`, `git push -u origin main`.
+Editar `js/engine.js`. Uma regra é um cruzamento de propriedades — pensar sempre se a severidade deve ser **graduada** em vez de binária, e se pode duplicar um cartão já existente (ver as guardas de deduplicação no código).
 
 ---
 
-## Como estender
+## Publicação
 
-- **Adicionar um fármaco:** acrescenta uma entrada a `DRUGS` em `js/data.js`.
-- **Adicionar uma interação:** acrescenta uma entrada a `RULES`, com a chave formada pelos dois IDs por **ordem alfabética**, separados por `|` (ex.: `"amiodarona|varfarina"`).
+O site é publicado automaticamente no GitHub Pages a cada push para `main` (workflow em `.github/workflows/deploy.yml`). O workflow `test.yml` corre os testes e verifica que o catálogo gerado está em dia.
 
 ---
 
-## Roadmap (visão)
+## Roadmap
 
-1. Base de interações validada (substituir o conteúdo ilustrativo por fonte reconhecida e versionada).
-2. Camada de linguagem natural para pergunta em texto livre.
-3. Integração no ponto de prescrição (EHR / SClínico).
-4. Validação clínica e percurso regulatório (software como dispositivo médico, MDR).
+1. **Contexto do doente** — TFG e idade, para os alertas passarem de informação a decisão (em curso).
+2. Colar a lista de medicação em texto livre (em vez de a escrever fármaco a fármaco).
+3. Exportar a revisão para o processo clínico.
+4. Base de interações validada e versionada (INFARMED/Infomed, Stockley's) — substitui o catálogo curado sem tocar no motor.
+5. Alergias, contraindicações e função hepática.
+6. Integração no ponto de prescrição (SClínico / PEM) e percurso regulatório (software como dispositivo médico, MDR Classe IIa a confirmar).
 
 ---
 

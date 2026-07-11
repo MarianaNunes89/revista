@@ -44,6 +44,18 @@
   .hidden{display:none}
   .listnote{padding:14px 18px 0;font-family:"IBM Plex Mono",monospace;font-size:10px;
     letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  /* contexto do doente: TFG */
+  .tfgrow{display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+    padding:12px 14px;border-bottom:1px solid var(--line-soft);background:var(--paper)}
+  .tfgrow label{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted)}
+  .tfgrow input{width:74px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;
+    font-family:"Inter",sans-serif;font-size:14px;font-weight:600;color:var(--ink);background:#fff}
+  .tfgrow input:focus{outline:2px solid var(--petrol);outline-offset:-1px}
+  .tfgunit{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted)}
+  .tfghint{flex:1 0 100%;font-size:11px;color:var(--muted)}
+  /* selo TFG aceso: o ajuste aplica-se MESMO a este doente */
+  .renal.on{color:#B42318;background:#FEF3F2;border-color:#FECDCA}
 </style>
 </head>
 <body>
@@ -78,6 +90,12 @@
     <!-- LEFT -->
     <div class="panel">
       <div class="panel-h"><h2>Medicação do utente</h2><span class="count" id="medCount">0</span></div>
+      <div class="tfgrow">
+        <label for="tfgInput">TFG</label>
+        <input id="tfgInput" type="number" min="1" max="150" step="1" placeholder="—" inputmode="numeric">
+        <span class="tfgunit">mL/min/1,73m²</span>
+        <span class="tfghint" id="tfgHint">opcional — filtra os ajustes que se aplicam a este doente</span>
+      </div>
       <div class="meds" id="medList"></div>
       <div class="addrow">
         <label for="acInput">Adicionar por nome</label>
@@ -93,6 +111,13 @@
 
     <!-- RIGHT -->
     <div class="rightcol">
+
+      <!-- ajustes renais acionados pela TFG deste doente -->
+      <div class="panel hidden" id="renalPanel">
+        <div class="panel-h"><h2>Ajuste à função renal</h2><span class="count" id="renalCount">·</span></div>
+        <div class="findings" id="renalBox"></div>
+      </div>
+
       <div class="panel">
         <div class="panel-h">
           <h2>Interações encontradas</h2>
@@ -156,79 +181,99 @@ const WARN_SVG = `<span class="warn" aria-label="Rever: uso tipicamente agudo"><
    Conteúdo clínico ilustrativo; a validar por farmacologia clínica. */
 const RENAL = {
   // Metabolismo
-  A10BA02:"Reduzir se TFG 30–45 (máx. 1000 mg/dia); contraindicada se TFG < 30. Suspender em doença aguda ou desidratação.",
-  A10BB09:"Sulfonilureia preferida na DRC (metabolitos inativos). Precaução se TFG < 30 — usar a dose mínima eficaz.",
-  A10BB12:"Evitar se TFG < 30 — risco de hipoglicemia prolongada.",
-  A10BB01:"Evitar na doença renal crónica — metabolitos ativos, hipoglicemia grave e prolongada.",
-  A10BH01:"Reduzir: 50 mg se TFG 30–45; 25 mg se TFG < 30.",
-  A10BH02:"Reduzir para 50 mg/dia se TFG < 50.",
-  A10BH03:"Reduzir para 2,5 mg/dia se TFG < 45.",
-  A10BK01:"Distinguir a INDICAÇÃO: a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (DAPA-CKD; KDIGO 2022) — não suspender por TFG baixa se a indicação for nefroproteção. Suspender em doença aguda (cetoacidose euglicémica).",
-  A10BK03:"Distinguir a INDICAÇÃO: a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (EMPA-KIDNEY; KDIGO 2022) — não suspender por TFG baixa se a indicação for nefroproteção. Suspender em doença aguda (cetoacidose euglicémica).",
-  A10BK02:"Distinguir a INDICAÇÃO: a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (CREDENCE; KDIGO 2022) — não suspender por TFG baixa se a indicação for nefroproteção. Suspender em doença aguda (cetoacidose euglicémica).",
-  A10AE04:"As necessidades de insulina descem com a TFG — titular pela glicemia e vigiar hipoglicemia (sem limiar fixo).",
-  A10AB05:"As necessidades de insulina descem com a TFG — titular pela glicemia e vigiar hipoglicemia (sem limiar fixo).",
-  A10AB01:"As necessidades de insulina descem com a TFG — titular pela glicemia e vigiar hipoglicemia (sem limiar fixo).",
-  A02BA03:"Reduzir a dose (~50 %) se TFG < 50.",
-  A03FA01:"Reduzir a dose em 50 % se TFG < 40. A restrição dominante é a DURAÇÃO: máximo 5 dias (EMA 2013).",
-  A07EC01:"Precaução na insuficiência renal — vigiar função renal e assegurar hidratação.",
+  A10BA02:{lim:45, txt:"Reduzir se TFG 30–45 (máx. 1000 mg/dia); contraindicada se TFG < 30. Suspender em doença aguda ou desidratação."},
+  A10BB09:{lim:30, txt:"Sulfonilureia preferida na DRC (metabolitos inativos). Precaução se TFG < 30 — usar a dose mínima eficaz."},
+  A10BB12:{lim:30, txt:"Evitar se TFG < 30 — risco de hipoglicemia prolongada."},
+  A10BB01:{lim:60, txt:"Evitar na doença renal crónica — metabolitos ativos, hipoglicemia grave e prolongada."},
+  A10BH01:{lim:45, txt:"Reduzir: 50 mg se TFG 30–45; 25 mg se TFG < 30."},
+  A10BH02:{lim:50, txt:"Reduzir para 50 mg/dia se TFG < 50."},
+  A10BH03:{lim:45, txt:"Reduzir para 2,5 mg/dia se TFG < 45."},
+  A10BK01:{lim:45, txt:"Distinguir a INDICAÇÃO: a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (DAPA-CKD; KDIGO 2022) — não suspender por TFG baixa se a indicação for nefroproteção. Suspender em doença aguda (cetoacidose euglicémica)."},
+  A10BK03:{lim:45, txt:"Distinguir a INDICAÇÃO: a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (EMPA-KIDNEY; KDIGO 2022) — não suspender por TFG baixa se a indicação for nefroproteção. Suspender em doença aguda (cetoacidose euglicémica)."},
+  A10BK02:{lim:45, txt:"Distinguir a INDICAÇÃO: a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (CREDENCE; KDIGO 2022) — não suspender por TFG baixa se a indicação for nefroproteção. Suspender em doença aguda (cetoacidose euglicémica)."},
+  A10AE04:{lim:60, txt:"As necessidades de insulina descem com a TFG — titular pela glicemia e vigiar hipoglicemia (sem limiar fixo)."},
+  A10AB05:{lim:60, txt:"As necessidades de insulina descem com a TFG — titular pela glicemia e vigiar hipoglicemia (sem limiar fixo)."},
+  A10AB01:{lim:60, txt:"As necessidades de insulina descem com a TFG — titular pela glicemia e vigiar hipoglicemia (sem limiar fixo)."},
+  A02BA03:{lim:50, txt:"Reduzir a dose (~50 %) se TFG < 50."},
+  A03FA01:{lim:40, txt:"Reduzir a dose em 50 % se TFG < 40. A restrição dominante é a DURAÇÃO: máximo 5 dias (EMA 2013)."},
+  A07EC01:{lim:60, txt:"Precaução na insuficiência renal — vigiar função renal e assegurar hidratação."},
   // Anticoagulantes e antiagregantes
-  B01AF02:"Reduzir para 2,5 mg 2×/dia se ≥ 2 de: idade ≥ 80, peso ≤ 60 kg, creatinina ≥ 1,5 mg/dL. Evitar se TFG < 15.",
-  B01AF01:"15 mg/dia se TFG 15–49 (FA). Evitar se TFG < 15.",
-  B01AF03:"30 mg/dia se TFG 15–50. Evitar se TFG < 15 — e também se TFG > 95 (eficácia reduzida na FA; aviso FDA).",
-  B01AE07:"Excreção renal ~80 % — reduzir se TFG 30–50; contraindicado se TFG < 30.",
-  B01AB05:"Se TFG < 30: 1 mg/kg uma vez por dia (em vez de 2×/dia) — acumulação e risco hemorrágico.",
-  B01AB04:"Acumula menos que a enoxaparina na DRC — preferível com TFG baixa; vigiar anti-Xa se TFG < 30.",
+  B01AF02:{lim:30, txt:"Reduzir para 2,5 mg 2×/dia se ≥ 2 de: idade ≥ 80, peso ≤ 60 kg, creatinina ≥ 1,5 mg/dL. Evitar se TFG < 15."},
+  B01AF01:{lim:50, txt:"15 mg/dia se TFG 15–49 (FA). Evitar se TFG < 15."},
+  B01AF03:{lim:50, hi:95, txt:"30 mg/dia se TFG 15–50. Evitar se TFG < 15 — e também se TFG > 95 (eficácia reduzida na FA; aviso FDA)."},
+  B01AE07:{lim:50, txt:"Excreção renal ~80 % — reduzir se TFG 30–50; contraindicado se TFG < 30."},
+  B01AB05:{lim:30, txt:"Se TFG < 30: 1 mg/kg uma vez por dia (em vez de 2×/dia) — acumulação e risco hemorrágico."},
+  B01AB04:{lim:30, txt:"Acumula menos que a enoxaparina na DRC — preferível com TFG baixa; vigiar anti-Xa se TFG < 30."},
   // Cardiovascular
-  C01AA05:"Manutenção 0,0625–0,125 mg/dia na DRC; alvo de digoxinemia 0,5–0,9 ng/mL. Vigiar níveis e função renal.",
-  C07AB03:"Excreção renal — reduzir a dose se TFG < 35.",
-  C07AB07:"Máximo 10 mg/dia se TFG < 20.",
-  C03AA03:"Ineficaz como anti-hipertensor se TFG < 30 — preferir diurético de ansa.",
-  C03BA11:"Ineficaz como anti-hipertensor se TFG < 30 — preferir diurético de ansa.",
-  C10AB05:"Reduzir se TFG < 60; evitar se TFG < 30 — acumula e aumenta o risco de miopatia.",
-  C03DA01:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺ apertadamente.",
-  C03DA04:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺.",
-  C10AA07:"Máx. 20 mg/dia se TFG < 60; iniciar 5 mg e evitar doses altas se TFG < 30.",
+  C01AA05:{lim:60, txt:"Manutenção 0,0625–0,125 mg/dia na DRC; alvo de digoxinemia 0,5–0,9 ng/mL. Vigiar níveis e função renal."},
+  C07AB03:{lim:35, txt:"Excreção renal — reduzir a dose se TFG < 35."},
+  C07AB07:{lim:20, txt:"Máximo 10 mg/dia se TFG < 20."},
+  C03AA03:{lim:30, txt:"Ineficaz como anti-hipertensor se TFG < 30 — preferir diurético de ansa."},
+  C03BA11:{lim:30, txt:"Ineficaz como anti-hipertensor se TFG < 30 — preferir diurético de ansa."},
+  C10AB05:{lim:60, txt:"Reduzir se TFG < 60; evitar se TFG < 30 — acumula e aumenta o risco de miopatia."},
+  C03DA01:{lim:30, txt:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺ apertadamente."},
+  C03DA04:{lim:30, txt:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺."},
+  C10AA07:{lim:60, txt:"Máx. 20 mg/dia se TFG < 60; iniciar 5 mg e evitar doses altas se TFG < 30."},
   // Gota e imunossupressores
-  M04AA01:"Iniciar 50–100 mg/dia e titular pela uricemia (alvo < 6 mg/dL), mesmo na DRC — a abordagem de «teto renal» está desatualizada (ACR 2020). Vigiar hipersensibilidade.",
-  M04AA03:"Precaução se TFG < 30 — dados limitados.",
-  M04AC01:"Reduzir a dose; evitar se TFG < 30 — risco de toxicidade grave.",
-  L01BA01:"Contraindicado se TFG < 30; reduzir dose e vigiar toxicidade medular.",
-  L04AX01:"Reduzir ~25 % se TFG < 30 — mas o determinante maior da toxicidade é o estado TPMT/NUDT15 e a co-prescrição de alopurinol/febuxostato, não a TFG.",
-  L01BB02:"Reduzir ~25 % se TFG < 30 — mas o determinante maior da toxicidade é o estado TPMT/NUDT15 e a co-prescrição de alopurinol/febuxostato, não a TFG.",
+  M04AA01:{lim:60, txt:"Iniciar 50–100 mg/dia e titular pela uricemia (alvo < 6 mg/dL), mesmo na DRC — a abordagem de «teto renal» está desatualizada (ACR 2020). Vigiar hipersensibilidade."},
+  M04AA03:{lim:30, txt:"Precaução se TFG < 30 — dados limitados."},
+  M04AC01:{lim:30, txt:"Reduzir a dose; evitar se TFG < 30 — risco de toxicidade grave."},
+  L01BA01:{lim:60, txt:"Contraindicado se TFG < 30; reduzir dose e vigiar toxicidade medular."},
+  L04AX01:{lim:30, txt:"Reduzir ~25 % se TFG < 30 — mas o determinante maior da toxicidade é o estado TPMT/NUDT15 e a co-prescrição de alopurinol/febuxostato, não a TFG."},
+  L01BB02:{lim:30, txt:"Reduzir ~25 % se TFG < 30 — mas o determinante maior da toxicidade é o estado TPMT/NUDT15 e a co-prescrição de alopurinol/febuxostato, não a TFG."},
   // Neuro
-  N03AX12:"Ajuste marcado à TFG — risco de sedação e mioclonias se não reduzida.",
-  N03AX16:"Ajustar a dose à TFG.",
-  N03AX14:"Ajustar a dose à TFG.",
-  N03AX11:"Reduzir a dose em 50 % se TFG < 70 (reduzir, não suspender).",
-  N05AN01:"Excreção renal — vigiar litemia e função renal; evitar na DRC avançada.",
-  N02AA01:"Metabolitos ativos acumulam-se — reduzir dose/aumentar intervalo; preferir alternativa se TFG < 30.",
-  N02AA05:"Reduzir/espaçar apenas na DRC grave (TFG < 30) — acumula menos que a morfina.",
-  N02AX02:"Aumentar o intervalo se TFG < 30 (máx. 200 mg/dia).",
-  N06AX21:"Evitar se TFG < 30.",
-  N06AX16:"Reduzir a dose em 25–50 % se TFG < 30.",
+  N03AX12:{lim:60, txt:"Ajuste marcado à TFG — risco de sedação e mioclonias se não reduzida."},
+  N03AX16:{lim:60, txt:"Ajustar a dose à TFG."},
+  N03AX14:{lim:50, txt:"Ajustar a dose à TFG."},
+  N03AX11:{lim:70, txt:"Reduzir a dose em 50 % se TFG < 70 (reduzir, não suspender)."},
+  N05AN01:{lim:60, txt:"Excreção renal — vigiar litemia e função renal; evitar na DRC avançada."},
+  N02AA01:{lim:60, txt:"Metabolitos ativos acumulam-se — reduzir dose/aumentar intervalo; preferir alternativa se TFG < 30."},
+  N02AA05:{lim:30, txt:"Reduzir/espaçar apenas na DRC grave (TFG < 30) — acumula menos que a morfina."},
+  N02AX02:{lim:30, txt:"Aumentar o intervalo se TFG < 30 (máx. 200 mg/dia)."},
+  N06AX21:{lim:30, txt:"Evitar se TFG < 30."},
+  N06AX16:{lim:30, txt:"Reduzir a dose em 25–50 % se TFG < 30."},
   // Anti-infecciosos
-  J01XE01:"Contraindicada se TFG < 45 — ineficaz na urina e risco de neuropatia.",
-  J01MA02:"Reduzir a dose se TFG < 30.",
-  J01MA12:"Ajustar a dose se TFG < 50.",
-  J01EE01:"Reduzir se TFG 15–30; evitar se TFG < 15. Risco de hipercaliemia.",
-  J01CA04:"Ajustar a dose se TFG < 30.",
-  J01CR02:"Ajustar a dose se TFG < 30.",
-  J01DC02:"Ajustar a dose se TFG < 30.",
-  J01FA09:"Reduzir a dose (~50 %) se TFG < 30.",
-  J02AC01:"Reduzir a dose (~50 %) se TFG < 50.",
-  J05AB01:"Ajustar dose/intervalo à TFG — risco de neurotoxicidade e nefrotoxicidade.",
-  J05AB11:"Ajustar dose/intervalo à TFG — risco de neurotoxicidade.",
+  J01XE01:{lim:45, txt:"Contraindicada se TFG < 45 — ineficaz na urina e risco de neuropatia."},
+  J01MA02:{lim:30, txt:"Reduzir a dose se TFG < 30."},
+  J01MA12:{lim:50, txt:"Ajustar a dose se TFG < 50."},
+  J01EE01:{lim:30, txt:"Reduzir se TFG 15–30; evitar se TFG < 15. Risco de hipercaliemia."},
+  J01CA04:{lim:30, txt:"Ajustar a dose se TFG < 30."},
+  J01CR02:{lim:30, txt:"Ajustar a dose se TFG < 30."},
+  J01DC02:{lim:30, txt:"Ajustar a dose se TFG < 30."},
+  J01FA09:{lim:30, txt:"Reduzir a dose (~50 %) se TFG < 30."},
+  J02AC01:{lim:50, txt:"Reduzir a dose (~50 %) se TFG < 50."},
+  J05AB01:{lim:60, txt:"Ajustar dose/intervalo à TFG — risco de neurotoxicidade e nefrotoxicidade."},
+  J05AB11:{lim:60, txt:"Ajustar dose/intervalo à TFG — risco de neurotoxicidade."},
   // Osso e alergia
-  M05BA04:"Contraindicado se TFG < 35.",
-  M05BA08:"Contraindicado se TFG < 35.",
-  R06AE07:"Reduzir a dose se TFG < 50.",
-  R06AE09:"Reduzir a dose se TFG < 50.",
-  R06AX26:"Reduzir a dose na insuficiência renal.",
+  M05BA04:{lim:35, txt:"Contraindicado se TFG < 35."},
+  M05BA08:{lim:35, txt:"Contraindicado se TFG < 35."},
+  R06AE07:{lim:50, txt:"Reduzir a dose se TFG < 50."},
+  R06AE09:{lim:50, txt:"Reduzir a dose se TFG < 50."},
+  R06AX26:{lim:60, txt:"Reduzir a dose na insuficiência renal."},
 };
-const renalBadge = s => RENAL[s.a]
-  ? `<span class="renal" aria-label="Ajuste à função renal">TFG<span class="tip"><b>Ajuste à função renal.</b> ${RENAL[s.a]}</span></span>`
-  : "";
+/* TFG do utente (mL/min/1,73m²). null = desconhecida. */
+let tfg = null;
+
+/** "none" | "unknown" | "active" | "inactive"
+ *  active   — a TFG do doente aciona o ajuste → é uma DECISÃO
+ *  inactive — o fármaco exige ajuste, mas não a esta TFG → silêncio, não ruído
+ *  unknown  — TFG não introduzida → mostra o selo, mas não decide por ele        */
+function renalState(s){
+  const r = RENAL[s.a];
+  if(!r) return "none";
+  if(tfg === null) return "unknown";
+  if(r.hi && tfg > r.hi) return "active";      // ex.: edoxabano com TFG > 95
+  return tfg <= r.lim ? "active" : "inactive";
+}
+function renalBadge(s){
+  const st = renalState(s);
+  if(st === "none" || st === "inactive") return "";
+  const r = RENAL[s.a], on = st === "active";
+  const head = on ? `<b>Ajustar à função renal (TFG ${tfg}).</b> ` : `<b>Ajuste à função renal.</b> `;
+  return `<span class="renal${on?" on":""}" aria-label="Ajuste à função renal">TFG<span class="tip">${head}${r.txt}</span></span>`;
+}
+/** alertas renais acionados pela TFG do doente */
+const renalAtivos = () => tfg === null ? [] : patient.filter(s => renalState(s) === "active");
 
 /* ===== etiquetas de classe para leitura rápida (singular, fundidas) ===== */
 /* nome do grupo ATC (override do que vem do catálogo) */
@@ -303,10 +348,49 @@ function render(){
   $("#findCount").textContent = findings.length===0 ? "0"
     : `${findings.length} ${findings.length===1?"interação":"interações"}${maj?` · ${maj} maior${maj>1?"es":""}`:""}`;
 
+  renderRenal();
   renderMatrix(findings);
   renderClassMembers();
   bind();
 }
+
+/* ===== ajustes renais acionados pela TFG deste doente ===== */
+function renderRenal(){
+  const panel = $("#renalPanel"), box = $("#renalBox");
+  const ativos = renalAtivos();
+  const mostrar = tfg !== null && patient.length > 0;
+  panel.classList.toggle("hidden", !mostrar);
+  if(!mostrar) return;
+
+  $("#renalCount").textContent = ativos.length === 0
+    ? "nenhum ajuste a esta TFG"
+    : `${ativos.length} ${ativos.length===1?"fármaco a ajustar":"fármacos a ajustar"}`;
+
+  if(ativos.length === 0){
+    box.innerHTML = `<div class="empty">Nenhum fármaco desta lista exige ajuste com TFG ${tfg}.</div>`;
+    return;
+  }
+  box.innerHTML = "";
+  ativos.forEach(s => {
+    const card = document.createElement("div"); card.className = "fcard";
+    card.innerHTML = `<div class="sevbar major"></div><div class="fbody">
+      <div class="ftop"><span class="pair">${s.d}</span>
+        <span class="sevtag major"><span class="sevdots" aria-hidden="true">●●●</span>TFG ${tfg}</span></div>
+      <p class="action"><b>Conduta:</b> ${RENAL[s.a].txt}</p></div>`;
+    box.appendChild(card);
+  });
+}
+
+/* campo da TFG — transforma os selos de informação em decisão */
+const tfgInput = $("#tfgInput");
+tfgInput.addEventListener("input", () => {
+  const v = parseInt(tfgInput.value, 10);
+  tfg = (Number.isFinite(v) && v > 0 && v <= 150) ? v : null;
+  $("#tfgHint").textContent = tfg === null
+    ? "opcional — filtra os ajustes que se aplicam a este doente"
+    : `a mostrar apenas os ajustes que se aplicam com TFG ${tfg}`;
+  render();
+});
 
 /* severidade codificada 3× (texto + pontos + padrão/cor), nunca só pela cor */
 const SEVLBL  = {major:"Maior", moderate:"Moderada", minor:"Menor"};
