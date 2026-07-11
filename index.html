@@ -20,15 +20,19 @@
     border-radius:7px;padding:5px 11px;cursor:pointer;font-family:"Inter",sans-serif;font-size:13px}
   .clsmember .add:hover{background:var(--petrol);color:#fff}
   .clsmember .add[disabled]{opacity:.45;cursor:default;background:var(--paper)}
+  .med .name{display:inline-flex;align-items:center}
+  /* dois avisos distintos pela FORMA (não só pela cor): triângulo = uso agudo; selo TFG = ajuste renal */
   .warn{position:relative;display:inline-flex;vertical-align:middle;margin-left:8px;cursor:help;color:#B45309}
   .warn svg{width:15px;height:15px;display:block}
-  .med .name{display:inline-flex;align-items:center}
-  .warn .tip{position:absolute;top:calc(100% + 9px);left:-4px;z-index:30;width:250px;
+  .renal{position:relative;display:inline-flex;align-items:center;vertical-align:middle;margin-left:8px;cursor:help;
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:none;
+    color:var(--petrol);background:var(--petrol-soft);border:1px solid #cfe0dd;border-radius:5px;padding:1px 5px}
+  .warn .tip,.renal .tip{position:absolute;top:calc(100% + 9px);left:-4px;z-index:30;width:270px;
     background:#1F2937;color:#fff;font-family:"Inter",sans-serif;font-size:12px;line-height:1.45;
     font-weight:400;text-transform:none;letter-spacing:normal;padding:9px 11px;border-radius:9px;
     box-shadow:0 8px 24px rgba(0,0,0,.22);opacity:0;visibility:hidden;transition:opacity .12s ease;pointer-events:none}
-  .warn .tip::after{content:"";position:absolute;bottom:100%;left:12px;border:6px solid transparent;border-bottom-color:#1F2937}
-  .warn:hover .tip{opacity:1;visibility:visible}
+  .warn .tip::after,.renal .tip::after{content:"";position:absolute;bottom:100%;left:12px;border:6px solid transparent;border-bottom-color:#1F2937}
+  .warn:hover .tip,.renal:hover .tip{opacity:1;visibility:visible}
 </style>
 </head>
 <body>
@@ -102,8 +106,8 @@ CATALOG.forEach(c => c.s.forEach(s => INDEX.push({a:s.a, d:s.d, p:s.p, cls:c.n, 
 $("#nSubs").textContent = INDEX.length;
 $("#nCls").textContent = CATALOG.length;
 
-let patient = ["Amiodarona","Sinvastatina","Bisoprolol","Ibuprofeno","Enalapril","Espironolactona","Furosemida","Sertralina","Tramadol"]
-  .map(n => INDEX.find(x => x.d === n)).filter(Boolean);
+/* a página abre vazia — é o médico que preenche a medicação */
+let patient = [];
 
 /* fármacos tipicamente de uso agudo/pontual — não habituais como medicação crónica.
    Sinalizados para revisão (indicação/duração; AINE = potencialmente inapropriado
@@ -111,6 +115,79 @@ let patient = ["Amiodarona","Sinvastatina","Bisoprolol","Ibuprofeno","Enalapril"
 const ACUTO_PREFIX = ["M01A", "J01", "J02", "N02CC", "P01AB", "M04AC"];
 const isAcuto = s => ACUTO_PREFIX.some(p => (s.atcCls||"").startsWith(p));
 const WARN_SVG = `<span class="warn" aria-label="Rever: uso tipicamente agudo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span class="tip">Fármaco tipicamente de uso agudo/pontual — não habitual como medicação crónica. Rever indicação e duração.</span></span>`;
+
+/* ===== ajuste à função renal (TFG, mL/min/1,73m²) =====
+   Selo "TFG" — distinto do triângulo pela FORMA, não só pela cor.
+   Conteúdo clínico ilustrativo; a validar por farmacologia clínica. */
+const RENAL = {
+  // Metabolismo
+  A10BA02:"Reduzir se TFG 30–45 (máx. 1000 mg/dia); contraindicada se TFG < 30. Suspender em doença aguda ou desidratação.",
+  A10BB09:"Precaução se TFG < 30 — hipoglicemia prolongada; usar a dose mínima eficaz.",
+  A10BB12:"Evitar se TFG < 30 — risco de hipoglicemia prolongada.",
+  A10BB01:"Evitar na doença renal crónica — metabolitos ativos, hipoglicemia grave e prolongada.",
+  A10BH01:"Reduzir: 50 mg se TFG 30–45; 25 mg se TFG < 30.",
+  A10BH02:"Reduzir para 50 mg/dia se TFG < 50.",
+  A10BH03:"Reduzir para 2,5 mg/dia se TFG < 45.",
+  A10BK01:"Eficácia glicémica reduzida com TFG baixa; verificar limiar de iniciação. Suspender em doença aguda (cetoacidose euglicémica).",
+  A10BK03:"Eficácia glicémica reduzida com TFG baixa; verificar limiar de iniciação. Suspender em doença aguda (cetoacidose euglicémica).",
+  A10BK02:"Eficácia glicémica reduzida com TFG baixa; verificar limiar de iniciação. Suspender em doença aguda (cetoacidose euglicémica).",
+  A10AE04:"As necessidades de insulina descem com a TFG — reduzir a dose e vigiar hipoglicemia.",
+  A10AB05:"As necessidades de insulina descem com a TFG — reduzir a dose e vigiar hipoglicemia.",
+  A10AB01:"As necessidades de insulina descem com a TFG — reduzir a dose e vigiar hipoglicemia.",
+  A02BA03:"Reduzir a dose (~50 %) se TFG < 50.",
+  A02BA02:"Reduzir a dose se TFG < 50.",
+  A03FA01:"Reduzir a dose se TFG < 60 — risco de efeitos extrapiramidais.",
+  // Anticoagulantes e antiagregantes
+  B01AF02:"Reduzir para 2,5 mg 2×/dia se ≥ 2 de: idade ≥ 80, peso ≤ 60 kg, creatinina ≥ 1,5 mg/dL. Evitar se TFG < 15.",
+  B01AF01:"15 mg/dia se TFG 15–49 (FA). Evitar se TFG < 15.",
+  B01AF03:"30 mg/dia se TFG 15–50. Evitar se TFG < 15.",
+  B01AE07:"Excreção renal ~80 % — reduzir se TFG 30–50; contraindicado se TFG < 30.",
+  B01AB05:"Reduzir a dose se TFG < 30 — acumulação e risco hemorrágico.",
+  B01AB04:"Vigiar (anti-Xa) se TFG < 30.",
+  // Cardiovascular
+  C01AA05:"Eliminação renal — reduzir a dose e vigiar digoxinemia; risco de toxicidade.",
+  C07AB03:"Excreção renal — reduzir a dose se TFG < 35.",
+  C03DA01:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺ apertadamente.",
+  C03DA04:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺.",
+  C10AA07:"Máx. 20 mg/dia se TFG < 60; iniciar 5 mg e evitar doses altas se TFG < 30.",
+  // Gota e imunossupressores
+  M04AA01:"Reduzir a dose conforme a TFG (iniciar 50–100 mg/dia); titular pela uricemia.",
+  M04AA03:"Precaução se TFG < 30 — dados limitados.",
+  M04AC01:"Reduzir a dose; evitar se TFG < 30 — risco de toxicidade grave.",
+  L01BA01:"Contraindicado se TFG < 30; reduzir dose e vigiar toxicidade medular.",
+  L04AX01:"Reduzir a dose na insuficiência renal.",
+  L01BB02:"Reduzir a dose na insuficiência renal.",
+  // Neuro
+  N03AX12:"Ajuste marcado à TFG — risco de sedação e mioclonias se não reduzida.",
+  N03AX16:"Ajustar a dose à TFG.",
+  N03AX14:"Ajustar a dose à TFG.",
+  N03AX11:"Ajustar a dose se TFG < 70.",
+  N05AN01:"Excreção renal — vigiar litemia e função renal; evitar na DRC avançada.",
+  N02AA01:"Metabolitos ativos acumulam-se — reduzir dose/aumentar intervalo; preferir alternativa se TFG < 30.",
+  N02AA05:"Reduzir a dose se TFG < 60.",
+  N02AX02:"Aumentar o intervalo se TFG < 30 (máx. 200 mg/dia).",
+  N06AX21:"Evitar se TFG < 30.",
+  // Anti-infecciosos
+  J01XE01:"Contraindicada se TFG < 45 — ineficaz na urina e risco de neuropatia.",
+  J01MA02:"Reduzir a dose se TFG < 30.",
+  J01MA12:"Ajustar a dose se TFG < 50.",
+  J01EE01:"Reduzir se TFG 15–30; evitar se TFG < 15. Risco de hipercaliemia.",
+  J01CA04:"Ajustar a dose se TFG < 30.",
+  J01CR02:"Ajustar a dose se TFG < 30.",
+  J01DC02:"Ajustar a dose se TFG < 30.",
+  J01FA09:"Reduzir a dose (~50 %) se TFG < 30.",
+  J02AC01:"Reduzir a dose (~50 %) se TFG < 50.",
+  J05AB01:"Ajustar dose/intervalo à TFG — risco de neurotoxicidade e nefrotoxicidade.",
+  J05AB11:"Ajustar dose/intervalo à TFG — risco de neurotoxicidade.",
+  // Osso e alergia
+  M05BA04:"Contraindicado se TFG < 35.",
+  M05BA08:"Contraindicado se TFG < 35.",
+  R06AE07:"Reduzir a dose se TFG < 50.",
+  R06AE09:"Reduzir a dose se TFG < 50.",
+};
+const renalBadge = s => RENAL[s.a]
+  ? `<span class="renal" aria-label="Ajuste à função renal">TFG<span class="tip"><b>Ajuste à função renal.</b> ${RENAL[s.a]}</span></span>`
+  : "";
 
 /* ===== etiquetas de classe para leitura rápida (singular, fundidas) ===== */
 /* nome do grupo ATC (override do que vem do catálogo) */
@@ -163,9 +240,11 @@ function removeByAtc(a){ patient = patient.filter(s => s.a !== a); render(); }
 function render(){
   // lista
   const ml = $("#medList"); ml.innerHTML = "";
-  patient.forEach(s => {
+  if(patient.length === 0){
+    ml.innerHTML = `<div class="empty">Sem medicação. Adicione os fármacos do utente — as interações aparecem sozinhas.</div>`;
+  } else patient.forEach(s => {
     const row = document.createElement("div"); row.className = "med";
-    row.innerHTML = `<span class="body"><span class="name">${s.d}${isAcuto(s)?WARN_SVG:""}</span>
+    row.innerHTML = `<span class="body"><span class="name">${s.d}${isAcuto(s)?WARN_SVG:""}${renalBadge(s)}</span>
       <span class="clsline">${dispClass(s)}</span></span>
       <button class="rm" title="Remover" data-a="${s.a}">×</button>`;
     ml.appendChild(row);
@@ -181,10 +260,12 @@ function render(){
     fbox.innerHTML = "";
     findings.forEach(f => {
       const label = {major:"Maior",moderate:"Moderada",minor:"Menor"}[f.sev];
+      // severidade codificada 3× (texto + pontos + padrão da barra), nunca só pela cor
+      const dots  = {major:"●●●",moderate:"●●",minor:"●"}[f.sev];
       const card = document.createElement("div"); card.className = "fcard";
       const pairHtml = f.b ? `${f.a}<em>+</em>${f.b}` : `${f.a}`;
       card.innerHTML = `<div class="sevbar ${f.sev}"></div><div class="fbody">
-        <div class="ftop"><span class="pair">${pairHtml}</span><span class="sevtag ${f.sev}">${label}</span></div>
+        <div class="ftop"><span class="pair">${pairHtml}</span><span class="sevtag ${f.sev}"><span class="sevdots" aria-hidden="true">${dots}</span>${label}</span></div>
         <p class="mech">${f.mech}</p><p class="action"><b>Conduta:</b> ${f.act}</p></div>`;
       fbox.appendChild(card);
     });
