@@ -69,6 +69,17 @@
   .newlist li{font-size:13px;color:var(--ink);line-height:1.45}
   .sevdots.major{color:var(--major)}.sevdots.moderate{color:var(--moderate)}.sevdots.minor{color:var(--minor)}
   .renalnote{margin-top:7px}
+  /* proveniência — fonte + nível de evidência, no próprio cartão */
+  .prov{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:9px 0 0;
+    padding-top:8px;border-top:1px dashed var(--line-soft)}
+  .prov .ev{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.06em;
+    text-transform:uppercase;padding:2px 6px;border-radius:5px;font-weight:600}
+  .ev-consenso{color:var(--petrol);background:var(--petrol-soft);border:1px solid #cfe0dd}
+  .ev-provável{color:var(--moderate-text);background:var(--moderate-bg);border:1px solid var(--moderate-bd)}
+  .ev-incerto{color:var(--minor-text);background:var(--minor-bg);border:1px solid var(--minor-bd)}
+  .prov .src{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted)}
+  .rbstamp{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);
+    letter-spacing:.06em;margin-top:10px;display:block}
 </style>
 </head>
 <body>
@@ -180,7 +191,8 @@
   </div>
 
   <footer>
-    <p class="disc"><b>Protótipo de demonstração.</b> Catálogo (base ATC) e regras de mecanismo ilustrativos e não exaustivos. Não substituem o juízo clínico, a verificação de alergias e contraindicações, nem as guidelines em vigor. Não se destina a uso clínico. Em produção, liga-se a uma base validada e versionada (INFARMED/Infomed) com revisão por farmacologia clínica.</p>
+    <p class="disc"><b>Protótipo de demonstração.</b> Catálogo (base ATC) e regras de mecanismo ilustrativos e não exaustivos. Não substituem o juízo clínico, a verificação de alergias e contraindicações, nem as guidelines em vigor. Não se destina a uso clínico. Em produção, liga-se a uma base validada e versionada (INFARMED/Infomed) com revisão por farmacologia clínica.
+    <span class="rbstamp" id="rbStamp">·</span></p>
   </footer>
 
 </div>
@@ -194,6 +206,11 @@ const INDEX = [];               // {a, d, p, cls, grupo}
 CATALOG.forEach(c => c.s.forEach(s => INDEX.push({a:s.a, d:s.d, p:s.p, cls:c.n, grupo:c.g, grupoNome:c.gn, atcCls:c.c})));
 $("#nSubs").textContent = INDEX.length;
 $("#nCls").textContent = CATALOG.length;
+
+/* carimbo da versão: qualquer decisão é rastreável à base de regras que a produziu */
+const nRegras = Object.keys(RULE_META).length;
+$("#rbStamp").textContent =
+  `Base de regras v${RULEBASE.version} (${RULEBASE.date}) · ${nRegras} regras, todas com fonte e nível de evidência · catálogo: ${INDEX.length} substâncias`;
 
 /* a página abre vazia — é o médico que preenche a medicação */
 let patient = [];
@@ -210,76 +227,76 @@ const WARN_SVG = `<span class="warn" aria-label="Rever: uso tipicamente agudo"><
    Conteúdo clínico ilustrativo; a validar por farmacologia clínica. */
 const RENAL = {
   // Metabolismo
-  A10BA02:{lim:45, ci:30, txt:"Reduzir se TFG 30–45 (máx. 1000 mg/dia); contraindicada se TFG < 30. Suspender em doença aguda ou desidratação."},
-  A10BB09:{lim:30, txt:"Sulfonilureia preferida na DRC (metabolitos inativos). Precaução se TFG < 30 — usar a dose mínima eficaz."},
-  A10BB12:{lim:30, ci:30, txt:"Evitar se TFG < 30 — risco de hipoglicemia prolongada."},
-  A10BB01:{lim:60, ci:60, txt:"Evitar na doença renal crónica — metabolitos ativos, hipoglicemia grave e prolongada."},
-  A10BH01:{lim:45, txt:"Reduzir: 50 mg se TFG 30–45; 25 mg se TFG < 30."},
-  A10BH02:{lim:50, txt:"Reduzir para 50 mg/dia se TFG < 50."},
-  A10BH03:{lim:45, txt:"Reduzir para 2,5 mg/dia se TFG < 45."},
-  A10BK01:{lim:45, txt:"Distinguir a INDICAÇÃO: a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (DAPA-CKD; KDIGO 2022) — não suspender por TFG baixa se a indicação for nefroproteção. Suspender em doença aguda (cetoacidose euglicémica)."},
-  A10BK03:{lim:45, txt:"Distinguir a INDICAÇÃO: a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (EMPA-KIDNEY; KDIGO 2022) — não suspender por TFG baixa se a indicação for nefroproteção. Suspender em doença aguda (cetoacidose euglicémica)."},
-  A10BK02:{lim:45, txt:"Distinguir a INDICAÇÃO: a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (CREDENCE; KDIGO 2022) — não suspender por TFG baixa se a indicação for nefroproteção. Suspender em doença aguda (cetoacidose euglicémica)."},
-  A10AE04:{lim:60, txt:"As necessidades de insulina descem com a TFG — titular pela glicemia e vigiar hipoglicemia (sem limiar fixo)."},
-  A10AB05:{lim:60, txt:"As necessidades de insulina descem com a TFG — titular pela glicemia e vigiar hipoglicemia (sem limiar fixo)."},
-  A10AB01:{lim:60, txt:"As necessidades de insulina descem com a TFG — titular pela glicemia e vigiar hipoglicemia (sem limiar fixo)."},
-  A02BA03:{lim:50, txt:"Reduzir a dose (~50 %) se TFG < 50."},
-  A03FA01:{lim:40, txt:"Reduzir a dose em 50 % se TFG < 40. A restrição dominante é a DURAÇÃO: máximo 5 dias (EMA 2013)."},
-  A07EC01:{lim:60, txt:"Precaução na insuficiência renal — vigiar função renal e assegurar hidratação."},
+  A10BA02:{lim:45, ci:30, txt:"Reduzir se TFG 30–45 (máx. 1000 mg/dia); contraindicada se TFG < 30. Suspender em doença aguda ou desidratação.", src:"FDA/EMA (relabel 2016)", ev:"consenso"},
+  A10BB09:{lim:30, txt:"Sulfonilureia preferida na DRC (metabolitos inativos). Precaução se TFG < 30 — usar a dose mínima eficaz.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  A10BB12:{lim:30, ci:30, txt:"Evitar se TFG < 30 — risco de hipoglicemia prolongada.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  A10BB01:{lim:60, ci:60, txt:"Evitar na doença renal crónica — metabolitos ativos, hipoglicemia grave e prolongada.", src:"RCM; STOPP", ev:"provável"},
+  A10BH01:{lim:45, txt:"Reduzir: 50 mg se TFG 30–45; 25 mg se TFG < 30.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  A10BH02:{lim:50, txt:"Reduzir para 50 mg/dia se TFG < 50.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  A10BH03:{lim:45, txt:"Reduzir para 2,5 mg/dia se TFG < 45.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  A10BK01:{lim:45, txt:"Distinguir a INDICAÇÃO: a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (DAPA-CKD; KDIGO 2022) — não suspender por TFG baixa se a indicação for nefroproteção. Suspender em doença aguda (cetoacidose euglicémica).", src:"DAPA-CKD; KDIGO 2022", ev:"consenso"},
+  A10BK03:{lim:45, txt:"Distinguir a INDICAÇÃO: a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (EMPA-KIDNEY; KDIGO 2022) — não suspender por TFG baixa se a indicação for nefroproteção. Suspender em doença aguda (cetoacidose euglicémica).", src:"EMPA-KIDNEY; KDIGO 2022", ev:"consenso"},
+  A10BK02:{lim:45, txt:"Distinguir a INDICAÇÃO: a eficácia glicémica cai com TFG < 45, mas a nefro/cardioproteção mantém-se até TFG ~20–25 (CREDENCE; KDIGO 2022) — não suspender por TFG baixa se a indicação for nefroproteção. Suspender em doença aguda (cetoacidose euglicémica).", src:"CREDENCE; KDIGO 2022", ev:"consenso"},
+  A10AE04:{lim:60, txt:"As necessidades de insulina descem com a TFG — titular pela glicemia e vigiar hipoglicemia (sem limiar fixo).", src:"RCM", ev:"provável"},
+  A10AB05:{lim:60, txt:"As necessidades de insulina descem com a TFG — titular pela glicemia e vigiar hipoglicemia (sem limiar fixo).", src:"RCM", ev:"provável"},
+  A10AB01:{lim:60, txt:"As necessidades de insulina descem com a TFG — titular pela glicemia e vigiar hipoglicemia (sem limiar fixo).", src:"RCM", ev:"provável"},
+  A02BA03:{lim:50, txt:"Reduzir a dose (~50 %) se TFG < 50.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  A03FA01:{lim:40, txt:"Reduzir a dose em 50 % se TFG < 40. A restrição dominante é a DURAÇÃO: máximo 5 dias (EMA 2013).", src:"EMA 2013; RCM", ev:"provável"},
+  A07EC01:{lim:60, txt:"Precaução na insuficiência renal — vigiar função renal e assegurar hidratação.", src:"RCM", ev:"incerto"},
   // Anticoagulantes e antiagregantes
-  B01AF02:{lim:30, ci:15, txt:"Reduzir para 2,5 mg 2×/dia se ≥ 2 de: idade ≥ 80, peso ≤ 60 kg, creatinina ≥ 1,5 mg/dL. Evitar se TFG < 15."},
-  B01AF01:{lim:50, ci:15, txt:"15 mg/dia se TFG 15–49 (FA). Evitar se TFG < 15."},
-  B01AF03:{lim:50, hi:95, ci:15, txt:"30 mg/dia se TFG 15–50. Evitar se TFG < 15 — e também se TFG > 95 (eficácia reduzida na FA; aviso FDA)."},
-  B01AE07:{lim:50, ci:30, txt:"Excreção renal ~80 % — reduzir se TFG 30–50; contraindicado se TFG < 30."},
-  B01AB05:{lim:30, txt:"Se TFG < 30: 1 mg/kg uma vez por dia (em vez de 2×/dia) — acumulação e risco hemorrágico."},
-  B01AB04:{lim:30, txt:"Acumula menos que a enoxaparina na DRC — preferível com TFG baixa; vigiar anti-Xa se TFG < 30."},
+  B01AF02:{lim:30, ci:15, txt:"Reduzir para 2,5 mg 2×/dia se ≥ 2 de: idade ≥ 80, peso ≤ 60 kg, creatinina ≥ 1,5 mg/dL. Evitar se TFG < 15.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  B01AF01:{lim:50, ci:15, txt:"15 mg/dia se TFG 15–49 (FA). Evitar se TFG < 15.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  B01AF03:{lim:50, hi:95, ci:15, txt:"30 mg/dia se TFG 15–50. Evitar se TFG < 15 — e também se TFG > 95 (eficácia reduzida na FA; aviso FDA).", src:"Aviso FDA (TFG > 95); RCM", ev:"consenso"},
+  B01AE07:{lim:50, ci:30, txt:"Excreção renal ~80 % — reduzir se TFG 30–50; contraindicado se TFG < 30.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  B01AB05:{lim:30, txt:"Se TFG < 30: 1 mg/kg uma vez por dia (em vez de 2×/dia) — acumulação e risco hemorrágico.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  B01AB04:{lim:30, txt:"Acumula menos que a enoxaparina na DRC — preferível com TFG baixa; vigiar anti-Xa se TFG < 30.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
   // Cardiovascular
-  C01AA05:{lim:60, txt:"Manutenção 0,0625–0,125 mg/dia na DRC; alvo de digoxinemia 0,5–0,9 ng/mL. Vigiar níveis e função renal."},
-  C07AB03:{lim:35, txt:"Excreção renal — reduzir a dose se TFG < 35."},
-  C07AB07:{lim:20, txt:"Máximo 10 mg/dia se TFG < 20."},
-  C03AA03:{lim:30, txt:"Ineficaz como anti-hipertensor se TFG < 30 — preferir diurético de ansa."},
-  C03BA11:{lim:30, txt:"Ineficaz como anti-hipertensor se TFG < 30 — preferir diurético de ansa."},
-  C10AB05:{lim:60, ci:30, txt:"Reduzir se TFG < 60; evitar se TFG < 30 — acumula e aumenta o risco de miopatia."},
-  C03DA01:{lim:30, ci:30, txt:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺ apertadamente."},
-  C03DA04:{lim:30, ci:30, txt:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺."},
-  C10AA07:{lim:60, txt:"Máx. 20 mg/dia se TFG < 60; iniciar 5 mg e evitar doses altas se TFG < 30."},
+  C01AA05:{lim:60, txt:"Manutenção 0,0625–0,125 mg/dia na DRC; alvo de digoxinemia 0,5–0,9 ng/mL. Vigiar níveis e função renal.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  C07AB03:{lim:35, txt:"Excreção renal — reduzir a dose se TFG < 35.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  C07AB07:{lim:20, txt:"Máximo 10 mg/dia se TFG < 20.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  C03AA03:{lim:30, txt:"Ineficaz como anti-hipertensor se TFG < 30 — preferir diurético de ansa.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  C03BA11:{lim:30, txt:"Ineficaz como anti-hipertensor se TFG < 30 — preferir diurético de ansa.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  C10AB05:{lim:60, ci:30, txt:"Reduzir se TFG < 60; evitar se TFG < 30 — acumula e aumenta o risco de miopatia.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  C03DA01:{lim:30, ci:30, txt:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺ apertadamente.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  C03DA04:{lim:30, ci:30, txt:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  C10AA07:{lim:60, txt:"Máx. 20 mg/dia se TFG < 60; iniciar 5 mg e evitar doses altas se TFG < 30.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
   // Gota e imunossupressores
-  M04AA01:{lim:60, txt:"Iniciar 50–100 mg/dia e titular pela uricemia (alvo < 6 mg/dL), mesmo na DRC — a abordagem de «teto renal» está desatualizada (ACR 2020). Vigiar hipersensibilidade."},
-  M04AA03:{lim:30, txt:"Precaução se TFG < 30 — dados limitados."},
-  M04AC01:{lim:30, ci:30, txt:"Reduzir a dose; evitar se TFG < 30 — risco de toxicidade grave."},
-  L01BA01:{lim:60, ci:30, txt:"Contraindicado se TFG < 30; reduzir dose e vigiar toxicidade medular."},
-  L04AX01:{lim:30, txt:"Reduzir ~25 % se TFG < 30 — mas o determinante maior da toxicidade é o estado TPMT/NUDT15 e a co-prescrição de alopurinol/febuxostato, não a TFG."},
-  L01BB02:{lim:30, txt:"Reduzir ~25 % se TFG < 30 — mas o determinante maior da toxicidade é o estado TPMT/NUDT15 e a co-prescrição de alopurinol/febuxostato, não a TFG."},
+  M04AA01:{lim:60, txt:"Iniciar 50–100 mg/dia e titular pela uricemia (alvo < 6 mg/dL), mesmo na DRC — a abordagem de «teto renal» está desatualizada (ACR 2020). Vigiar hipersensibilidade.", src:"ACR 2020", ev:"consenso"},
+  M04AA03:{lim:30, txt:"Precaução se TFG < 30 — dados limitados.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  M04AC01:{lim:30, ci:30, txt:"Reduzir a dose; evitar se TFG < 30 — risco de toxicidade grave.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  L01BA01:{lim:60, ci:30, txt:"Contraindicado se TFG < 30; reduzir dose e vigiar toxicidade medular.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  L04AX01:{lim:30, txt:"Reduzir ~25 % se TFG < 30 — mas o determinante maior da toxicidade é o estado TPMT/NUDT15 e a co-prescrição de alopurinol/febuxostato, não a TFG.", src:"RCM; Stockley's", ev:"incerto"},
+  L01BB02:{lim:30, txt:"Reduzir ~25 % se TFG < 30 — mas o determinante maior da toxicidade é o estado TPMT/NUDT15 e a co-prescrição de alopurinol/febuxostato, não a TFG.", src:"RCM; Stockley's", ev:"incerto"},
   // Neuro
-  N03AX12:{lim:60, txt:"Ajuste marcado à TFG — risco de sedação e mioclonias se não reduzida."},
-  N03AX16:{lim:60, txt:"Ajustar a dose à TFG."},
-  N03AX14:{lim:50, txt:"Ajustar a dose à TFG."},
-  N03AX11:{lim:70, txt:"Reduzir a dose em 50 % se TFG < 70 (reduzir, não suspender)."},
-  N05AN01:{lim:60, txt:"Excreção renal — vigiar litemia e função renal; evitar na DRC avançada."},
-  N02AA01:{lim:60, txt:"Metabolitos ativos acumulam-se — reduzir dose/aumentar intervalo; preferir alternativa se TFG < 30."},
-  N02AA05:{lim:30, txt:"Reduzir/espaçar apenas na DRC grave (TFG < 30) — acumula menos que a morfina."},
-  N02AX02:{lim:30, txt:"Aumentar o intervalo se TFG < 30 (máx. 200 mg/dia)."},
-  N06AX21:{lim:30, ci:30, txt:"Evitar se TFG < 30."},
-  N06AX16:{lim:30, txt:"Reduzir a dose em 25–50 % se TFG < 30."},
+  N03AX12:{lim:60, txt:"Ajuste marcado à TFG — risco de sedação e mioclonias se não reduzida.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  N03AX16:{lim:60, txt:"Ajustar a dose à TFG.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  N03AX14:{lim:50, txt:"Ajustar a dose à TFG.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  N03AX11:{lim:70, txt:"Reduzir a dose em 50 % se TFG < 70 (reduzir, não suspender).", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  N05AN01:{lim:60, txt:"Excreção renal — vigiar litemia e função renal; evitar na DRC avançada.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  N02AA01:{lim:60, txt:"Metabolitos ativos acumulam-se — reduzir dose/aumentar intervalo; preferir alternativa se TFG < 30.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  N02AA05:{lim:30, txt:"Reduzir/espaçar apenas na DRC grave (TFG < 30) — acumula menos que a morfina.", src:"RCM; Stockley's", ev:"provável"},
+  N02AX02:{lim:30, txt:"Aumentar o intervalo se TFG < 30 (máx. 200 mg/dia).", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  N06AX21:{lim:30, ci:30, txt:"Evitar se TFG < 30.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  N06AX16:{lim:30, txt:"Reduzir a dose em 25–50 % se TFG < 30.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
   // Anti-infecciosos
-  J01XE01:{lim:45, ci:45, txt:"Contraindicada se TFG < 45 — ineficaz na urina e risco de neuropatia."},
-  J01MA02:{lim:30, txt:"Reduzir a dose se TFG < 30."},
-  J01MA12:{lim:50, txt:"Ajustar a dose se TFG < 50."},
-  J01MA06:{lim:30, txt:"Reduzir a dose se TFG < 30 — excreção renal. (A confirmar por farmacologia clínica.)"},
-  J01EE01:{lim:30, ci:15, txt:"Reduzir se TFG 15–30; evitar se TFG < 15. Risco de hipercaliemia."},
-  J01CA04:{lim:30, txt:"Ajustar a dose se TFG < 30."},
-  J01CR02:{lim:30, txt:"Ajustar a dose se TFG < 30."},
-  J01DC02:{lim:30, txt:"Ajustar a dose se TFG < 30."},
-  J01FA09:{lim:30, txt:"Reduzir a dose (~50 %) se TFG < 30."},
-  J02AC01:{lim:50, txt:"Reduzir a dose (~50 %) se TFG < 50."},
-  J05AB01:{lim:60, txt:"Ajustar dose/intervalo à TFG — risco de neurotoxicidade e nefrotoxicidade."},
-  J05AB11:{lim:60, txt:"Ajustar dose/intervalo à TFG — risco de neurotoxicidade."},
+  J01XE01:{lim:45, ci:45, txt:"Contraindicada se TFG < 45 — ineficaz na urina e risco de neuropatia.", src:"BNF; RCM", ev:"provável"},
+  J01MA02:{lim:30, txt:"Reduzir a dose se TFG < 30.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  J01MA12:{lim:50, txt:"Ajustar a dose se TFG < 50.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  J01MA06:{lim:30, txt:"Reduzir a dose se TFG < 30 — excreção renal. (A confirmar por farmacologia clínica.)", src:"RCM", ev:"incerto"},
+  J01EE01:{lim:30, ci:15, txt:"Reduzir se TFG 15–30; evitar se TFG < 15. Risco de hipercaliemia.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  J01CA04:{lim:30, txt:"Ajustar a dose se TFG < 30.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  J01CR02:{lim:30, txt:"Ajustar a dose se TFG < 30.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  J01DC02:{lim:30, txt:"Ajustar a dose se TFG < 30.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  J01FA09:{lim:30, txt:"Reduzir a dose (~50 %) se TFG < 30.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  J02AC01:{lim:50, txt:"Reduzir a dose (~50 %) se TFG < 50.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  J05AB01:{lim:60, txt:"Ajustar dose/intervalo à TFG — risco de neurotoxicidade e nefrotoxicidade.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  J05AB11:{lim:60, txt:"Ajustar dose/intervalo à TFG — risco de neurotoxicidade.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
   // Osso e alergia
-  M05BA04:{lim:35, ci:35, txt:"Contraindicado se TFG < 35."},
-  M05BA08:{lim:35, ci:35, txt:"Contraindicado se TFG < 35."},
-  R06AE07:{lim:50, txt:"Reduzir a dose se TFG < 50."},
-  R06AE09:{lim:50, txt:"Reduzir a dose se TFG < 50."},
-  R06AX26:{lim:60, txt:"Reduzir a dose na insuficiência renal."},
+  M05BA04:{lim:35, ci:35, txt:"Contraindicado se TFG < 35.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  M05BA08:{lim:35, ci:35, txt:"Contraindicado se TFG < 35.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  R06AE07:{lim:50, txt:"Reduzir a dose se TFG < 50.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  R06AE09:{lim:50, txt:"Reduzir a dose se TFG < 50.", src:"RCM; Renal Drug Handbook", ev:"consenso"},
+  R06AX26:{lim:60, txt:"Reduzir a dose na insuficiência renal.", src:"RCM", ev:"incerto"},
 };
 /* ===== contexto do doente (SECUNDÁRIO) =====
    O produto é o cruzamento de interações. O rim é contexto: por omissão está
@@ -416,11 +433,13 @@ function renderRenal(){
     (renalState(b) === "contra") - (renalState(a) === "contra"));
   ord.forEach(s => {
     const ci = renalState(s) === "contra";
+    const r  = RENAL[s.a];
     const card = document.createElement("div"); card.className = "fcard";
     card.innerHTML = `<div class="sevbar ${ci?"major":"moderate"}"></div><div class="fbody">
       <div class="ftop"><span class="pair">${s.d}</span>
         <span class="sevtag ${ci?"major":"moderate"}"><span class="sevdots" aria-hidden="true">${ci?"●●●":"●●"}</span>${ci?"Contraindicado":"Ajustar"}</span></div>
-      <p class="action"><b>Conduta:</b> ${RENAL[s.a].txt}</p></div>`;
+      <p class="action"><b>Conduta:</b> ${r.txt}</p>
+      <p class="prov"><span class="ev ev-${r.ev}">${r.ev}</span><span class="src">${r.src}</span></p></div>`;
     box.appendChild(card);
   });
 }
@@ -524,12 +543,18 @@ const SEVLBL  = {major:"Maior", moderate:"Moderada", minor:"Menor"};
 const SEVDOTS = {major:"●●●",   moderate:"●●",       minor:"●"};
 const RANK    = {major:0, moderate:1, minor:2};
 
+/* níveis de evidência — a ferramenta diz o que sabe E o quanto sabe */
+const EV_LBL = { "consenso":"consenso", "provável":"provável", "incerto":"incerto" };
+
 function cardEl(f){
   const card = document.createElement("div"); card.className = "fcard";
   const pairHtml = f.b ? `${f.a}<em>+</em>${f.b}` : `${f.a}`;
+  // proveniência: a fonte e o nível de evidência viajam com o achado
+  const prov = f.src ? `<p class="prov"><span class="ev ev-${f.ev}">${EV_LBL[f.ev]||f.ev}</span>
+      <span class="src">${f.src}</span></p>` : "";
   card.innerHTML = `<div class="sevbar ${f.sev}"></div><div class="fbody">
     <div class="ftop"><span class="pair">${pairHtml}</span><span class="sevtag ${f.sev}"><span class="sevdots" aria-hidden="true">${SEVDOTS[f.sev]}</span>${SEVLBL[f.sev]}</span></div>
-    <p class="mech">${f.mech}</p><p class="action"><b>Conduta:</b> ${f.act}</p></div>`;
+    <p class="mech">${f.mech}</p><p class="action"><b>Conduta:</b> ${f.act}</p>${prov}</div>`;
   return card;
 }
 
