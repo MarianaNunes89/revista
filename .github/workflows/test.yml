@@ -1,0 +1,32 @@
+name: Testes do motor
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Correr os testes do motor de interações
+        run: node --test
+
+      - name: Verificar que o catálogo gerado está em dia
+        run: |
+          python3 -m pip install --quiet --break-system-packages openpyxl || true
+          cd data && python3 build_catalogo.py
+          cd ..
+          if ! git diff --quiet -- js/catalog.js; then
+            echo "::error::js/catalog.js está desatualizado — corra 'python3 data/build_catalogo.py' e faça commit do resultado."
+            git diff --stat -- js/catalog.js
+            exit 1
+          fi
+          echo "catalog.js está em dia."
