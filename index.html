@@ -59,6 +59,16 @@
   .tfghint{flex:1 0 100%;font-size:11px;color:var(--muted)}
   /* selo TFG aceso: o ajuste aplica-se MESMO a este doente */
   .renal.on{color:#B42318;background:#FEF3F2;border-color:#FECDCA}
+  /* apoio à prescrição */
+  .startrow{padding:14px 18px 0}
+  .sevbar.ok{background:var(--petrol)}
+  .sevtag.v-preferir{color:var(--petrol);background:var(--petrol-soft);border:1px solid #cfe0dd}
+  .sevtag.v-cautela{color:var(--moderate-text);background:var(--moderate-bg);border:1px solid var(--moderate-bd)}
+  .sevtag.v-evitar{color:var(--major-text);background:var(--major-bg);border:1px solid var(--major-bd)}
+  .newlist{margin:7px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+  .newlist li{font-size:13px;color:var(--ink);line-height:1.45}
+  .sevdots.major{color:var(--major)}.sevdots.moderate{color:var(--moderate)}.sevdots.minor{color:var(--minor)}
+  .renalnote{margin-top:7px}
 </style>
 </head>
 <body>
@@ -151,6 +161,15 @@
         </div>
       </div>
 
+      <!-- apoio à prescrição: qual o mais seguro PARA ESTA LISTA -->
+      <div class="panel">
+        <div class="panel-h"><h2>Preciso de iniciar…</h2><span class="count" id="startCount">·</span></div>
+        <div class="startrow">
+          <select class="qsel" id="startSel" style="width:100%"></select>
+        </div>
+        <div class="findings" id="startOut"></div>
+      </div>
+
       <!-- secundário: só aparece se o utente tiver DRC e houver TFG -->
       <div class="panel hidden" id="renalPanel">
         <div class="panel-h"><h2>Ajuste à função renal</h2><span class="count" id="renalCount">·</span></div>
@@ -191,10 +210,10 @@ const WARN_SVG = `<span class="warn" aria-label="Rever: uso tipicamente agudo"><
    Conteúdo clínico ilustrativo; a validar por farmacologia clínica. */
 const RENAL = {
   // Metabolismo
-  A10BA02:{lim:45, txt:"Reduzir se TFG 30–45 (máx. 1000 mg/dia); contraindicada se TFG < 30. Suspender em doença aguda ou desidratação."},
+  A10BA02:{lim:45, ci:30, txt:"Reduzir se TFG 30–45 (máx. 1000 mg/dia); contraindicada se TFG < 30. Suspender em doença aguda ou desidratação."},
   A10BB09:{lim:30, txt:"Sulfonilureia preferida na DRC (metabolitos inativos). Precaução se TFG < 30 — usar a dose mínima eficaz."},
-  A10BB12:{lim:30, txt:"Evitar se TFG < 30 — risco de hipoglicemia prolongada."},
-  A10BB01:{lim:60, txt:"Evitar na doença renal crónica — metabolitos ativos, hipoglicemia grave e prolongada."},
+  A10BB12:{lim:30, ci:30, txt:"Evitar se TFG < 30 — risco de hipoglicemia prolongada."},
+  A10BB01:{lim:60, ci:60, txt:"Evitar na doença renal crónica — metabolitos ativos, hipoglicemia grave e prolongada."},
   A10BH01:{lim:45, txt:"Reduzir: 50 mg se TFG 30–45; 25 mg se TFG < 30."},
   A10BH02:{lim:50, txt:"Reduzir para 50 mg/dia se TFG < 50."},
   A10BH03:{lim:45, txt:"Reduzir para 2,5 mg/dia se TFG < 45."},
@@ -208,10 +227,10 @@ const RENAL = {
   A03FA01:{lim:40, txt:"Reduzir a dose em 50 % se TFG < 40. A restrição dominante é a DURAÇÃO: máximo 5 dias (EMA 2013)."},
   A07EC01:{lim:60, txt:"Precaução na insuficiência renal — vigiar função renal e assegurar hidratação."},
   // Anticoagulantes e antiagregantes
-  B01AF02:{lim:30, txt:"Reduzir para 2,5 mg 2×/dia se ≥ 2 de: idade ≥ 80, peso ≤ 60 kg, creatinina ≥ 1,5 mg/dL. Evitar se TFG < 15."},
-  B01AF01:{lim:50, txt:"15 mg/dia se TFG 15–49 (FA). Evitar se TFG < 15."},
-  B01AF03:{lim:50, hi:95, txt:"30 mg/dia se TFG 15–50. Evitar se TFG < 15 — e também se TFG > 95 (eficácia reduzida na FA; aviso FDA)."},
-  B01AE07:{lim:50, txt:"Excreção renal ~80 % — reduzir se TFG 30–50; contraindicado se TFG < 30."},
+  B01AF02:{lim:30, ci:15, txt:"Reduzir para 2,5 mg 2×/dia se ≥ 2 de: idade ≥ 80, peso ≤ 60 kg, creatinina ≥ 1,5 mg/dL. Evitar se TFG < 15."},
+  B01AF01:{lim:50, ci:15, txt:"15 mg/dia se TFG 15–49 (FA). Evitar se TFG < 15."},
+  B01AF03:{lim:50, hi:95, ci:15, txt:"30 mg/dia se TFG 15–50. Evitar se TFG < 15 — e também se TFG > 95 (eficácia reduzida na FA; aviso FDA)."},
+  B01AE07:{lim:50, ci:30, txt:"Excreção renal ~80 % — reduzir se TFG 30–50; contraindicado se TFG < 30."},
   B01AB05:{lim:30, txt:"Se TFG < 30: 1 mg/kg uma vez por dia (em vez de 2×/dia) — acumulação e risco hemorrágico."},
   B01AB04:{lim:30, txt:"Acumula menos que a enoxaparina na DRC — preferível com TFG baixa; vigiar anti-Xa se TFG < 30."},
   // Cardiovascular
@@ -220,15 +239,15 @@ const RENAL = {
   C07AB07:{lim:20, txt:"Máximo 10 mg/dia se TFG < 20."},
   C03AA03:{lim:30, txt:"Ineficaz como anti-hipertensor se TFG < 30 — preferir diurético de ansa."},
   C03BA11:{lim:30, txt:"Ineficaz como anti-hipertensor se TFG < 30 — preferir diurético de ansa."},
-  C10AB05:{lim:60, txt:"Reduzir se TFG < 60; evitar se TFG < 30 — acumula e aumenta o risco de miopatia."},
-  C03DA01:{lim:30, txt:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺ apertadamente."},
-  C03DA04:{lim:30, txt:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺."},
+  C10AB05:{lim:60, ci:30, txt:"Reduzir se TFG < 60; evitar se TFG < 30 — acumula e aumenta o risco de miopatia."},
+  C03DA01:{lim:30, ci:30, txt:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺ apertadamente."},
+  C03DA04:{lim:30, ci:30, txt:"Risco de hipercaliemia — evitar se TFG < 30; vigiar K⁺."},
   C10AA07:{lim:60, txt:"Máx. 20 mg/dia se TFG < 60; iniciar 5 mg e evitar doses altas se TFG < 30."},
   // Gota e imunossupressores
   M04AA01:{lim:60, txt:"Iniciar 50–100 mg/dia e titular pela uricemia (alvo < 6 mg/dL), mesmo na DRC — a abordagem de «teto renal» está desatualizada (ACR 2020). Vigiar hipersensibilidade."},
   M04AA03:{lim:30, txt:"Precaução se TFG < 30 — dados limitados."},
-  M04AC01:{lim:30, txt:"Reduzir a dose; evitar se TFG < 30 — risco de toxicidade grave."},
-  L01BA01:{lim:60, txt:"Contraindicado se TFG < 30; reduzir dose e vigiar toxicidade medular."},
+  M04AC01:{lim:30, ci:30, txt:"Reduzir a dose; evitar se TFG < 30 — risco de toxicidade grave."},
+  L01BA01:{lim:60, ci:30, txt:"Contraindicado se TFG < 30; reduzir dose e vigiar toxicidade medular."},
   L04AX01:{lim:30, txt:"Reduzir ~25 % se TFG < 30 — mas o determinante maior da toxicidade é o estado TPMT/NUDT15 e a co-prescrição de alopurinol/febuxostato, não a TFG."},
   L01BB02:{lim:30, txt:"Reduzir ~25 % se TFG < 30 — mas o determinante maior da toxicidade é o estado TPMT/NUDT15 e a co-prescrição de alopurinol/febuxostato, não a TFG."},
   // Neuro
@@ -240,13 +259,14 @@ const RENAL = {
   N02AA01:{lim:60, txt:"Metabolitos ativos acumulam-se — reduzir dose/aumentar intervalo; preferir alternativa se TFG < 30."},
   N02AA05:{lim:30, txt:"Reduzir/espaçar apenas na DRC grave (TFG < 30) — acumula menos que a morfina."},
   N02AX02:{lim:30, txt:"Aumentar o intervalo se TFG < 30 (máx. 200 mg/dia)."},
-  N06AX21:{lim:30, txt:"Evitar se TFG < 30."},
+  N06AX21:{lim:30, ci:30, txt:"Evitar se TFG < 30."},
   N06AX16:{lim:30, txt:"Reduzir a dose em 25–50 % se TFG < 30."},
   // Anti-infecciosos
-  J01XE01:{lim:45, txt:"Contraindicada se TFG < 45 — ineficaz na urina e risco de neuropatia."},
+  J01XE01:{lim:45, ci:45, txt:"Contraindicada se TFG < 45 — ineficaz na urina e risco de neuropatia."},
   J01MA02:{lim:30, txt:"Reduzir a dose se TFG < 30."},
   J01MA12:{lim:50, txt:"Ajustar a dose se TFG < 50."},
-  J01EE01:{lim:30, txt:"Reduzir se TFG 15–30; evitar se TFG < 15. Risco de hipercaliemia."},
+  J01MA06:{lim:30, txt:"Reduzir a dose se TFG < 30 — excreção renal. (A confirmar por farmacologia clínica.)"},
+  J01EE01:{lim:30, ci:15, txt:"Reduzir se TFG 15–30; evitar se TFG < 15. Risco de hipercaliemia."},
   J01CA04:{lim:30, txt:"Ajustar a dose se TFG < 30."},
   J01CR02:{lim:30, txt:"Ajustar a dose se TFG < 30."},
   J01DC02:{lim:30, txt:"Ajustar a dose se TFG < 30."},
@@ -255,8 +275,8 @@ const RENAL = {
   J05AB01:{lim:60, txt:"Ajustar dose/intervalo à TFG — risco de neurotoxicidade e nefrotoxicidade."},
   J05AB11:{lim:60, txt:"Ajustar dose/intervalo à TFG — risco de neurotoxicidade."},
   // Osso e alergia
-  M05BA04:{lim:35, txt:"Contraindicado se TFG < 35."},
-  M05BA08:{lim:35, txt:"Contraindicado se TFG < 35."},
+  M05BA04:{lim:35, ci:35, txt:"Contraindicado se TFG < 35."},
+  M05BA08:{lim:35, ci:35, txt:"Contraindicado se TFG < 35."},
   R06AE07:{lim:50, txt:"Reduzir a dose se TFG < 50."},
   R06AE09:{lim:50, txt:"Reduzir a dose se TFG < 50."},
   R06AX26:{lim:60, txt:"Reduzir a dose na insuficiência renal."},
@@ -267,27 +287,32 @@ const RENAL = {
 let drc = false;      // o utente tem doença renal crónica?
 let tfg = null;       // TFG em mL/min/1,73m² (null = por introduzir)
 
-/** "none" | "unknown" | "active" | "inactive"
+/** "none" | "unknown" | "contra" | "active" | "inactive"
  *  none     — sem DRC assinalada, ou fármaco sem ajuste → nada aparece
  *  unknown  — DRC assinalada mas sem TFG → sinaliza o fármaco, não decide por ele
- *  active   — a TFG deste doente aciona o ajuste → é uma DECISÃO
+ *  contra   — CONTRAINDICADO a esta TFG. Não é "ajustar": é "não usar".
+ *  active   — a TFG deste doente aciona o AJUSTE de dose → é uma DECISÃO
  *  inactive — o fármaco exige ajuste, mas não a esta TFG → silêncio, não ruído   */
 function renalState(s){
   const r = RENAL[s.a];
   if(!r || !drc) return "none";
   if(tfg === null) return "unknown";
+  if(r.ci && tfg <= r.ci) return "contra";     // contraindicado — distinto de ajustar
   if(r.hi && tfg > r.hi) return "active";      // ex.: edoxabano com TFG > 95
   return tfg <= r.lim ? "active" : "inactive";
 }
+const renalOn = st => st === "active" || st === "contra";
 function renalBadge(s){
   const st = renalState(s);
   if(st === "none" || st === "inactive") return "";
-  const r = RENAL[s.a], on = st === "active";
-  const head = on ? `<b>Ajustar à função renal (TFG ${tfg}).</b> ` : `<b>Ajuste à função renal.</b> `;
-  return `<span class="renal${on?" on":""}" aria-label="Ajuste à função renal">TFG<span class="tip">${head}${r.txt}</span></span>`;
+  const r = RENAL[s.a];
+  const head = st === "contra" ? `<b>Contraindicado com TFG ${tfg}.</b> `
+             : st === "active" ? `<b>Ajustar à função renal (TFG ${tfg}).</b> `
+             : `<b>Ajuste à função renal.</b> `;
+  return `<span class="renal${renalOn(st)?" on":""}" aria-label="Ajuste à função renal">TFG<span class="tip">${head}${r.txt}</span></span>`;
 }
-/** alertas renais acionados pela TFG do doente */
-const renalAtivos = () => tfg === null ? [] : patient.filter(s => renalState(s) === "active");
+/** alertas renais acionados pela TFG do doente (ajuste ou contraindicação) */
+const renalAtivos = () => tfg === null ? [] : patient.filter(s => renalOn(renalState(s)));
 
 /* ===== etiquetas de classe para leitura rápida (singular, fundidas) ===== */
 /* nome do grupo ATC (override do que vem do catálogo) */
@@ -365,6 +390,7 @@ function render(){
   renderRenal();
   renderMatrix(findings);
   renderClassMembers();
+  if (typeof renderStart === "function") renderStart();   // recalcula as sugestões
   bind();
 }
 
@@ -385,13 +411,93 @@ function renderRenal(){
     return;
   }
   box.innerHTML = "";
-  ativos.forEach(s => {
+  // contraindicados primeiro — "não usar" pesa mais do que "ajustar"
+  const ord = ativos.slice().sort((a,b) =>
+    (renalState(b) === "contra") - (renalState(a) === "contra"));
+  ord.forEach(s => {
+    const ci = renalState(s) === "contra";
     const card = document.createElement("div"); card.className = "fcard";
-    card.innerHTML = `<div class="sevbar major"></div><div class="fbody">
+    card.innerHTML = `<div class="sevbar ${ci?"major":"moderate"}"></div><div class="fbody">
       <div class="ftop"><span class="pair">${s.d}</span>
-        <span class="sevtag major"><span class="sevdots" aria-hidden="true">●●●</span>TFG ${tfg}</span></div>
+        <span class="sevtag ${ci?"major":"moderate"}"><span class="sevdots" aria-hidden="true">${ci?"●●●":"●●"}</span>${ci?"Contraindicado":"Ajustar"}</span></div>
       <p class="action"><b>Conduta:</b> ${RENAL[s.a].txt}</p></div>`;
     box.appendChild(card);
+  });
+}
+
+/* ===================================================================
+   APOIO À PRESCRIÇÃO — "preciso de iniciar um X: qual o mais seguro?"
+   Não é uma base de dados nova: é o MESMO motor, corrido em simulação.
+   Para cada candidato da classe, calcula analyze(lista + candidato) e
+   fica só com o que é NOVO — os achados que aquele fármaco traria.
+   =================================================================== */
+const chave = f => `${f.a}|${f.b}|${f.mech}`;
+
+function simular(cand){
+  const base  = new Set(analyze(patient.map(s => ({d:s.d, p:s.p}))).map(chave));
+  const comEle = analyze([...patient, cand].map(s => ({d:s.d, p:s.p})));
+  const novos = comEle.filter(f => !base.has(chave(f)));   // apanha pares E achados de lista
+  const n = sev => novos.filter(f => f.sev === sev).length;
+  const rst   = renalState(cand);
+  const contra = rst === "contra";                          // não usar neste doente
+  const ajuste = rst === "active";                          // usar, mas ajustar a dose
+  const maj = n("major"), mod = n("moderate"), min = n("minor");
+  // um fármaco contraindicado pelo rim é para EVITAR, não é "cautela"
+  const verdito = (maj || contra) ? "evitar"
+                : (mod || ajuste || min) ? "cautela"
+                : "preferir";
+  return { cand, novos, maj, mod, min, contra, ajuste, verdito,
+           score: [maj + (contra ? 1 : 0), mod, ajuste ? 1 : 0, min] };
+}
+
+const startSel = $("#startSel");
+(function fillStart(){
+  const byGroup = {};
+  Object.keys(DISPLAY_CLASSES).forEach(l => (byGroup[DISPLAY_CLASSES[l].g] = byGroup[DISPLAY_CLASSES[l].g]||[]).push(l));
+  let html = `<option value="">Selecionar a classe a iniciar…</option>`;
+  Object.keys(byGroup).sort().forEach(g => {
+    html += `<optgroup label="${g} — ${grupoNome(g)}">`;
+    byGroup[g].sort((a,b)=>a.localeCompare(b,"pt")).forEach(l => html += `<option value="${l}">${l}</option>`);
+    html += `</optgroup>`;
+  });
+  startSel.innerHTML = html;
+})();
+startSel.addEventListener("change", renderStart);
+
+const VERD = { preferir:"Preferir", cautela:"Cautela", evitar:"Evitar" };
+
+function renderStart(){
+  const out = $("#startOut"), lbl = startSel.value;
+  const cnt = $("#startCount");
+  if(!lbl){ out.innerHTML = `<div class="empty">Escolha a classe que precisa de iniciar — a Revista ordena as opções pelo que cada uma provoca nesta lista.</div>`; cnt.textContent = "·"; return; }
+  if(patient.length === 0){ out.innerHTML = `<div class="empty">Adicione primeiro a medicação do utente.</div>`; cnt.textContent = "·"; return; }
+
+  const cands = DISPLAY_CLASSES[lbl].subs.filter(s => !inList(s.a));
+  if(cands.length === 0){ out.innerHTML = `<div class="empty">Todas as substâncias desta classe já estão na lista.</div>`; cnt.textContent = "·"; return; }
+
+  const res = cands.map(simular).sort((a,b) => {
+    for(let i=0;i<4;i++) if(a.score[i] !== b.score[i]) return a.score[i] - b.score[i];
+    return a.cand.d.localeCompare(b.cand.d,"pt");
+  });
+
+  const limpos = res.filter(r => r.verdito === "preferir").length;
+  cnt.textContent = limpos ? `${limpos} sem interação nova` : "todas as opções têm ressalvas";
+
+  out.innerHTML = "";
+  res.forEach(r => {
+    const card = document.createElement("div"); card.className = "fcard";
+    const bar = r.verdito === "evitar" ? "major" : r.verdito === "cautela" ? "moderate" : "ok";
+    const detalhe = r.novos.length
+      ? `<ul class="newlist">` + r.novos.map(f =>
+          `<li><span class="sevdots ${f.sev}" aria-hidden="true">${SEVDOTS[f.sev]}</span> ${f.b ? `com <b>${f.b === r.cand.d ? f.a : f.b}</b>: ` : ""}${f.mech}</li>`).join("") + `</ul>`
+      : `<p class="mech">Não cria nenhuma interação nova nesta lista.</p>`;
+    const notaRenal = (r.contra || r.ajuste)
+      ? `<p class="action renalnote"><b>${r.contra ? `Contraindicado com TFG ${tfg}:` : `Ajustar à TFG ${tfg}:`}</b> ${RENAL[r.cand.a].txt}</p>` : "";
+    card.innerHTML = `<div class="sevbar ${bar}"></div><div class="fbody">
+      <div class="ftop"><span class="pair">${r.cand.d}</span>
+        <span class="sevtag v-${r.verdito}">${VERD[r.verdito]}</span></div>
+      ${detalhe}${notaRenal}</div>`;
+    out.appendChild(card);
   });
 }
 
