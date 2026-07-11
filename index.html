@@ -33,6 +33,17 @@
     box-shadow:0 8px 24px rgba(0,0,0,.22);opacity:0;visibility:hidden;transition:opacity .12s ease;pointer-events:none}
   .warn .tip::after,.renal .tip::after{content:"";position:absolute;bottom:100%;left:12px;border:6px solid transparent;border-bottom-color:#1F2937}
   .warn:hover .tip,.renal:hover .tip{opacity:1;visibility:visible}
+  /* alternador de vistas + glifo dentro da célula (cor + forma) */
+  .viewtog{display:inline-flex;gap:4px;margin-right:12px}
+  .viewtog button{font-family:"Inter",sans-serif;font-size:12px;font-weight:600;border:1px solid var(--line);
+    background:#fff;color:var(--muted);padding:5px 12px;border-radius:16px;cursor:pointer}
+  .viewtog button.on{background:var(--petrol);color:#fff;border-color:var(--petrol)}
+  .hdrright{display:flex;align-items:center}
+  .cell .g{display:block;line-height:30px;text-align:center;color:#fff;font-size:8px;
+    letter-spacing:.5px;font-family:"IBM Plex Mono",monospace}
+  .hidden{display:none}
+  .listnote{padding:14px 18px 0;font-family:"IBM Plex Mono",monospace;font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -83,8 +94,32 @@
     <!-- RIGHT -->
     <div class="rightcol">
       <div class="panel">
-        <div class="panel-h"><h2>Interações encontradas</h2><span class="count" id="findCount">·</span></div>
+        <div class="panel-h">
+          <h2>Interações encontradas</h2>
+          <span class="hdrright">
+            <span class="viewtog">
+              <button id="btnCards" class="on" type="button">Cartões</button>
+              <button id="btnMatrix" type="button">Matriz</button>
+            </span>
+            <span class="count" id="findCount">·</span>
+          </span>
+        </div>
+
+        <!-- vista: cartões -->
         <div class="findings" id="findings"></div>
+
+        <!-- vista: matriz (mesmos dados do motor) -->
+        <div id="matrixWrap" class="hidden">
+          <div class="matrix-body" id="matrixBox"></div>
+          <div class="legend">
+            <span><i style="background:var(--major)"></i> ●●● Maior · evitar</span>
+            <span><i style="background:var(--moderate)"></i> ●● Moderada · monitorizar</span>
+            <span><i style="background:var(--minor)"></i> ● Menor · vigiar</span>
+            <span><i style="background:#eef2f1"></i> Sem interação conhecida</span>
+          </div>
+          <div class="findings" id="mxDetail"></div>
+          <div class="findings" id="mxList"></div>
+        </div>
       </div>
     </div>
 
@@ -251,32 +286,93 @@ function render(){
   });
   $("#medCount").textContent = patient.length + (patient.length===1?" fármaco":" fármacos");
 
-  // interações
+  // interações — uma só fonte de verdade (o motor), duas vistas
   const findings = analyze(patient.map(s => ({d:s.d, p:s.p})));
   const fbox = $("#findings");
   if(patient.length < 2) fbox.innerHTML = `<div class="empty">Adicione pelo menos dois fármacos.</div>`;
   else if(findings.length === 0) fbox.innerHTML = `<div class="empty">Nenhuma interação conhecida nesta lista.</div>`;
-  else {
-    fbox.innerHTML = "";
-    findings.forEach(f => {
-      const label = {major:"Maior",moderate:"Moderada",minor:"Menor"}[f.sev];
-      // severidade codificada 3× (texto + pontos + padrão da barra), nunca só pela cor
-      const dots  = {major:"●●●",moderate:"●●",minor:"●"}[f.sev];
-      const card = document.createElement("div"); card.className = "fcard";
-      const pairHtml = f.b ? `${f.a}<em>+</em>${f.b}` : `${f.a}`;
-      card.innerHTML = `<div class="sevbar ${f.sev}"></div><div class="fbody">
-        <div class="ftop"><span class="pair">${pairHtml}</span><span class="sevtag ${f.sev}"><span class="sevdots" aria-hidden="true">${dots}</span>${label}</span></div>
-        <p class="mech">${f.mech}</p><p class="action"><b>Conduta:</b> ${f.act}</p></div>`;
-      fbox.appendChild(card);
-    });
-  }
+  else { fbox.innerHTML = ""; findings.forEach(f => fbox.appendChild(cardEl(f))); }
+
   const maj = findings.filter(f=>f.sev==="major").length;
   $("#findCount").textContent = findings.length===0 ? "0"
     : `${findings.length} ${findings.length===1?"interação":"interações"}${maj?` · ${maj} maior${maj>1?"es":""}`:""}`;
 
+  renderMatrix(findings);
   renderClassMembers();
   bind();
 }
+
+/* severidade codificada 3× (texto + pontos + padrão/cor), nunca só pela cor */
+const SEVLBL  = {major:"Maior", moderate:"Moderada", minor:"Menor"};
+const SEVDOTS = {major:"●●●",   moderate:"●●",       minor:"●"};
+const RANK    = {major:0, moderate:1, minor:2};
+
+function cardEl(f){
+  const card = document.createElement("div"); card.className = "fcard";
+  const pairHtml = f.b ? `${f.a}<em>+</em>${f.b}` : `${f.a}`;
+  card.innerHTML = `<div class="sevbar ${f.sev}"></div><div class="fbody">
+    <div class="ftop"><span class="pair">${pairHtml}</span><span class="sevtag ${f.sev}"><span class="sevdots" aria-hidden="true">${SEVDOTS[f.sev]}</span>${SEVLBL[f.sev]}</span></div>
+    <p class="mech">${f.mech}</p><p class="action"><b>Conduta:</b> ${f.act}</p></div>`;
+  return card;
+}
+
+/* ===== vista matriz — lê os mesmos achados do motor ===== */
+const pairKey = (a,b) => [a,b].sort().join("||");
+function renderMatrix(findings){
+  const box = $("#matrixBox"), det = $("#mxDetail"), lst = $("#mxList");
+  det.innerHTML = ""; lst.innerHTML = "";
+  if(patient.length < 2){ box.innerHTML = `<div class="empty">Adicione pelo menos dois fármacos.</div>`; return; }
+
+  // separar achados par-a-par dos achados sobre a lista inteira
+  const pairMap = {}, listLevel = [];
+  findings.forEach(f => {
+    const isPair = f.b && patient.some(s => s.d === f.a) && patient.some(s => s.d === f.b);
+    if(!isPair){ listLevel.push(f); return; }
+    (pairMap[pairKey(f.a,f.b)] = pairMap[pairKey(f.a,f.b)] || []).push(f);
+  });
+
+  let html = '<table class="mx"><tr><td></td>';
+  patient.forEach(s => html += `<td class="colh"><span>${s.d}</span></td>`);
+  html += '</tr>';
+  patient.forEach((r,i) => {
+    html += `<tr><td class="rowh">${r.d}</td>`;
+    patient.forEach((c,j) => {
+      if(i === j){ html += '<td><div class="cell diag"></div></td>'; return; }
+      const fs = pairMap[pairKey(r.d,c.d)] || [];
+      if(!fs.length){ html += '<td><div class="cell clean"></div></td>'; return; }
+      const best = fs.slice().sort((x,y)=>RANK[x.sev]-RANK[y.sev])[0];
+      html += `<td><div class="cell ${best.sev}" data-k="${pairKey(r.d,c.d)}" title="${r.d} + ${c.d} — ${SEVLBL[best.sev]}"><span class="g" aria-hidden="true">${SEVDOTS[best.sev]}</span></div></td>`;
+    });
+    html += '</tr>';
+  });
+  box.innerHTML = html + '</table>';
+
+  box.querySelectorAll(".cell[data-k]").forEach(el => el.onclick = () => {
+    box.querySelectorAll(".cell").forEach(c => c.classList.remove("sel"));
+    el.classList.add("sel");
+    det.innerHTML = "";
+    (pairMap[el.dataset.k] || []).forEach(f => det.appendChild(cardEl(f)));
+  });
+
+  if(listLevel.length){
+    const note = document.createElement("div"); note.className = "listnote";
+    note.textContent = "Achados sobre a lista inteira";
+    lst.appendChild(note);
+    listLevel.forEach(f => lst.appendChild(cardEl(f)));
+  }
+}
+
+/* alternador de vistas */
+const btnCards = $("#btnCards"), btnMatrix = $("#btnMatrix");
+function setView(v){
+  const matrix = v === "matrix";
+  $("#findings").classList.toggle("hidden", matrix);
+  $("#matrixWrap").classList.toggle("hidden", !matrix);
+  btnCards.classList.toggle("on", !matrix);
+  btnMatrix.classList.toggle("on", matrix);
+}
+btnCards.onclick  = () => setView("cards");
+btnMatrix.onclick = () => setView("matrix");
 
 /* ===== autocomplete por nome/classe ===== */
 const acInput=$("#acInput"), acList=$("#acList");
