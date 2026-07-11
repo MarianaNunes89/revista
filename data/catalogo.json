@@ -1,0 +1,2400 @@
+{
+  "meta": {
+    "nome": "Catálogo Revista — substâncias ativas por classe (base ATC)",
+    "fase": "1 — classes relevantes para ambulatório / Medicina Geral e Familiar",
+    "sistema_classes": "ATC (Anatomical Therapeutic Chemical, OMS)",
+    "gerado_em": "2026-07-11",
+    "n_grupos": 11,
+    "n_classes": 92,
+    "n_substancias": 194,
+    "aviso": "Ilustrativo e não exaustivo. Nomes em DCI (português). A reconciliar contra a base do INFARMED/Infomed e a completar com a totalidade do índice ATC numa fase seguinte."
+  },
+  "classes": [
+    {
+      "atc_classe": "A02BC",
+      "classe": "Inibidores da bomba de protões (IBP)",
+      "grupo_atc": "A",
+      "grupo_nome": "Trato gastrointestinal e metabolismo",
+      "substancias": [
+        {
+          "atc": "A02BC01",
+          "dci": "Omeprazol",
+          "inn": "omeprazole",
+          "props": [
+            "cyp2c19i"
+          ]
+        },
+        {
+          "atc": "A02BC02",
+          "dci": "Pantoprazol",
+          "inn": "pantoprazole",
+          "props": []
+        },
+        {
+          "atc": "A02BC03",
+          "dci": "Lansoprazol",
+          "inn": "lansoprazole",
+          "props": []
+        },
+        {
+          "atc": "A02BC05",
+          "dci": "Esomeprazol",
+          "inn": "esomeprazole",
+          "props": [
+            "cyp2c19i"
+          ]
+        },
+        {
+          "atc": "A02BC04",
+          "dci": "Rabeprazol",
+          "inn": "rabeprazole",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "A02BA",
+      "classe": "Antagonistas dos recetores H2",
+      "grupo_atc": "A",
+      "grupo_nome": "Trato gastrointestinal e metabolismo",
+      "substancias": [
+        {
+          "atc": "A02BA03",
+          "dci": "Famotidina",
+          "inn": "famotidine",
+          "props": [
+            "qt_cond"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "A03FA",
+      "classe": "Procinéticos",
+      "grupo_atc": "A",
+      "grupo_nome": "Trato gastrointestinal e metabolismo",
+      "substancias": [
+        {
+          "atc": "A03FA01",
+          "dci": "Metoclopramida",
+          "inn": "metoclopramide",
+          "props": [
+            "qt_cond"
+          ]
+        },
+        {
+          "atc": "A03FA03",
+          "dci": "Domperidona",
+          "inn": "domperidone",
+          "props": [
+            "qt_known"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "A06AD",
+      "classe": "Laxantes osmóticos",
+      "grupo_atc": "A",
+      "grupo_nome": "Trato gastrointestinal e metabolismo",
+      "substancias": [
+        {
+          "atc": "A06AD11",
+          "dci": "Lactulose",
+          "inn": "lactulose",
+          "props": []
+        },
+        {
+          "atc": "A06AD15",
+          "dci": "Macrogol",
+          "inn": "macrogol",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "A07EC",
+      "classe": "Aminossalicilatos (DII)",
+      "grupo_atc": "A",
+      "grupo_nome": "Trato gastrointestinal e metabolismo",
+      "substancias": [
+        {
+          "atc": "A07EC01",
+          "dci": "Sulfassalazina",
+          "inn": "sulfasalazine",
+          "props": []
+        },
+        {
+          "atc": "A07EC02",
+          "dci": "Mesalazina",
+          "inn": "mesalazine",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "A10BA",
+      "classe": "Biguanidas",
+      "grupo_atc": "A",
+      "grupo_nome": "Trato gastrointestinal e metabolismo",
+      "substancias": [
+        {
+          "atc": "A10BA02",
+          "dci": "Metformina",
+          "inn": "metformin",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "A10BB",
+      "classe": "Sulfonilureias",
+      "grupo_atc": "A",
+      "grupo_nome": "Trato gastrointestinal e metabolismo",
+      "substancias": [
+        {
+          "atc": "A10BB09",
+          "dci": "Gliclazida",
+          "inn": "gliclazide",
+          "props": [
+            "hipoglic",
+            "sulfonilureia"
+          ]
+        },
+        {
+          "atc": "A10BB12",
+          "dci": "Glimepirida",
+          "inn": "glimepiride",
+          "props": [
+            "hipoglic",
+            "sulfonilureia"
+          ]
+        },
+        {
+          "atc": "A10BB01",
+          "dci": "Glibenclamida",
+          "inn": "glibenclamide",
+          "props": [
+            "hipoglic",
+            "sulfonilureia"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "A10BH",
+      "classe": "Inibidores da DPP-4 (gliptinas)",
+      "grupo_atc": "A",
+      "grupo_nome": "Trato gastrointestinal e metabolismo",
+      "substancias": [
+        {
+          "atc": "A10BH01",
+          "dci": "Sitagliptina",
+          "inn": "sitagliptin",
+          "props": []
+        },
+        {
+          "atc": "A10BH05",
+          "dci": "Linagliptina",
+          "inn": "linagliptin",
+          "props": []
+        },
+        {
+          "atc": "A10BH02",
+          "dci": "Vildagliptina",
+          "inn": "vildagliptin",
+          "props": []
+        },
+        {
+          "atc": "A10BH03",
+          "dci": "Saxagliptina",
+          "inn": "saxagliptin",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "A10BK",
+      "classe": "Inibidores do SGLT2 (gliflozinas)",
+      "grupo_atc": "A",
+      "grupo_nome": "Trato gastrointestinal e metabolismo",
+      "substancias": [
+        {
+          "atc": "A10BK01",
+          "dci": "Dapagliflozina",
+          "inn": "dapagliflozin",
+          "props": [
+            "sglt2"
+          ]
+        },
+        {
+          "atc": "A10BK03",
+          "dci": "Empagliflozina",
+          "inn": "empagliflozin",
+          "props": [
+            "sglt2"
+          ]
+        },
+        {
+          "atc": "A10BK02",
+          "dci": "Canagliflozina",
+          "inn": "canagliflozin",
+          "props": [
+            "sglt2"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "A10BJ",
+      "classe": "Agonistas do recetor GLP-1",
+      "grupo_atc": "A",
+      "grupo_nome": "Trato gastrointestinal e metabolismo",
+      "substancias": [
+        {
+          "atc": "A10BJ06",
+          "dci": "Semaglutido",
+          "inn": "semaglutide",
+          "props": []
+        },
+        {
+          "atc": "A10BJ05",
+          "dci": "Dulaglutido",
+          "inn": "dulaglutide",
+          "props": []
+        },
+        {
+          "atc": "A10BJ02",
+          "dci": "Liraglutido",
+          "inn": "liraglutide",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "A10A",
+      "classe": "Insulinas e análogos",
+      "grupo_atc": "A",
+      "grupo_nome": "Trato gastrointestinal e metabolismo",
+      "substancias": [
+        {
+          "atc": "A10AE04",
+          "dci": "Insulina glargina",
+          "inn": "insulin glargine",
+          "props": [
+            "hipoglic"
+          ]
+        },
+        {
+          "atc": "A10AB05",
+          "dci": "Insulina aspártico",
+          "inn": "insulin aspart",
+          "props": [
+            "hipoglic"
+          ]
+        },
+        {
+          "atc": "A10AB01",
+          "dci": "Insulina humana",
+          "inn": "insulin (human)",
+          "props": [
+            "hipoglic"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "A11CC",
+      "classe": "Vitamina D e análogos",
+      "grupo_atc": "A",
+      "grupo_nome": "Trato gastrointestinal e metabolismo",
+      "substancias": [
+        {
+          "atc": "A11CC05",
+          "dci": "Colecalciferol",
+          "inn": "colecalciferol",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "B01AA",
+      "classe": "Antagonistas da vitamina K (AVK)",
+      "grupo_atc": "B",
+      "grupo_nome": "Sangue e órgãos hematopoiéticos",
+      "substancias": [
+        {
+          "atc": "B01AA03",
+          "dci": "Varfarina",
+          "inn": "warfarin",
+          "props": [
+            "anticoag",
+            "avk"
+          ]
+        },
+        {
+          "atc": "B01AA07",
+          "dci": "Acenocumarol",
+          "inn": "acenocoumarol",
+          "props": [
+            "anticoag",
+            "avk"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "B01AF",
+      "classe": "Inibidores diretos do fator Xa (DOAC)",
+      "grupo_atc": "B",
+      "grupo_nome": "Sangue e órgãos hematopoiéticos",
+      "substancias": [
+        {
+          "atc": "B01AF02",
+          "dci": "Apixabano",
+          "inn": "apixaban",
+          "props": [
+            "anticoag",
+            "cyp3a4s_estreito",
+            "pgps"
+          ]
+        },
+        {
+          "atc": "B01AF01",
+          "dci": "Rivaroxabano",
+          "inn": "rivaroxaban",
+          "props": [
+            "anticoag",
+            "cyp3a4s_estreito",
+            "pgps"
+          ]
+        },
+        {
+          "atc": "B01AF03",
+          "dci": "Edoxabano",
+          "inn": "edoxaban",
+          "props": [
+            "anticoag",
+            "pgps"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "B01AE",
+      "classe": "Inibidores diretos da trombina",
+      "grupo_atc": "B",
+      "grupo_nome": "Sangue e órgãos hematopoiéticos",
+      "substancias": [
+        {
+          "atc": "B01AE07",
+          "dci": "Dabigatrano",
+          "inn": "dabigatran",
+          "props": [
+            "anticoag",
+            "pgps"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "B01AC",
+      "classe": "Antiagregantes plaquetários",
+      "grupo_atc": "B",
+      "grupo_nome": "Sangue e órgãos hematopoiéticos",
+      "substancias": [
+        {
+          "atc": "B01AC06",
+          "dci": "Ácido acetilsalicílico",
+          "inn": "acetylsalicylic acid",
+          "props": [
+            "antiagreg",
+            "gi"
+          ]
+        },
+        {
+          "atc": "B01AC04",
+          "dci": "Clopidogrel",
+          "inn": "clopidogrel",
+          "props": [
+            "antiagreg",
+            "clopidogrel"
+          ]
+        },
+        {
+          "atc": "B01AC24",
+          "dci": "Ticagrelor",
+          "inn": "ticagrelor",
+          "props": [
+            "antiagreg",
+            "cyp3a4s_estreito"
+          ]
+        },
+        {
+          "atc": "B01AC22",
+          "dci": "Prasugrel",
+          "inn": "prasugrel",
+          "props": [
+            "antiagreg"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "B01AB",
+      "classe": "Heparinas de baixo peso molecular",
+      "grupo_atc": "B",
+      "grupo_nome": "Sangue e órgãos hematopoiéticos",
+      "substancias": [
+        {
+          "atc": "B01AB05",
+          "dci": "Enoxaparina",
+          "inn": "enoxaparin",
+          "props": [
+            "anticoag"
+          ]
+        },
+        {
+          "atc": "B01AB04",
+          "dci": "Dalteparina",
+          "inn": "dalteparin",
+          "props": [
+            "anticoag"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "B03A",
+      "classe": "Preparações de ferro",
+      "grupo_atc": "B",
+      "grupo_nome": "Sangue e órgãos hematopoiéticos",
+      "substancias": [
+        {
+          "atc": "B03AA07",
+          "dci": "Sulfato ferroso",
+          "inn": "ferrous sulfate",
+          "props": [
+            "catiao"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "B03B",
+      "classe": "Vitamina B12 e ácido fólico",
+      "grupo_atc": "B",
+      "grupo_nome": "Sangue e órgãos hematopoiéticos",
+      "substancias": [
+        {
+          "atc": "B03BB01",
+          "dci": "Ácido fólico",
+          "inn": "folic acid",
+          "props": []
+        },
+        {
+          "atc": "B03BA01",
+          "dci": "Cianocobalamina",
+          "inn": "cyanocobalamin",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "C01AA",
+      "classe": "Glicósidos digitálicos",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C01AA05",
+          "dci": "Digoxina",
+          "inn": "digoxin",
+          "props": [
+            "avnode",
+            "digital",
+            "pgps"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C01BD",
+      "classe": "Antiarrítmicos classe III",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C01BD01",
+          "dci": "Amiodarona",
+          "inn": "amiodarone",
+          "props": [
+            "avnode_forte",
+            "cyp3a4i_mod",
+            "inr_up",
+            "inr_up_forte",
+            "pgpi",
+            "qt_known"
+          ]
+        },
+        {
+          "atc": "C01BD07",
+          "dci": "Dronedarona",
+          "inn": "dronedarone",
+          "props": [
+            "avnode_forte",
+            "cyp3a4i_mod",
+            "inr_up",
+            "pgpi",
+            "qt_known"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C01BC",
+      "classe": "Antiarrítmicos classe Ic",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C01BC04",
+          "dci": "Flecainida",
+          "inn": "flecainide",
+          "props": [
+            "avnode"
+          ]
+        },
+        {
+          "atc": "C01BC03",
+          "dci": "Propafenona",
+          "inn": "propafenone",
+          "props": [
+            "avnode",
+            "pgpi"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C01DA",
+      "classe": "Nitratos orgânicos",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C01DA08",
+          "dci": "Dinitrato de isossorbida",
+          "inn": "isosorbide dinitrate",
+          "props": [
+            "nitrato"
+          ]
+        },
+        {
+          "atc": "C01DA14",
+          "dci": "Mononitrato de isossorbida",
+          "inn": "isosorbide mononitrate",
+          "props": [
+            "nitrato"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C03CA",
+      "classe": "Diuréticos de ansa",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C03CA01",
+          "dci": "Furosemida",
+          "inn": "furosemide",
+          "props": [
+            "diur",
+            "kdown"
+          ]
+        },
+        {
+          "atc": "C03CA04",
+          "dci": "Torasemida",
+          "inn": "torasemide",
+          "props": [
+            "diur",
+            "kdown"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C03AA",
+      "classe": "Tiazidas e análogos",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C03AA03",
+          "dci": "Hidroclorotiazida",
+          "inn": "hydrochlorothiazide",
+          "props": [
+            "diur",
+            "hiponatremia",
+            "kdown"
+          ]
+        },
+        {
+          "atc": "C03BA11",
+          "dci": "Indapamida",
+          "inn": "indapamide",
+          "props": [
+            "diur",
+            "hiponatremia",
+            "kdown"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C03DA",
+      "classe": "Diuréticos poupadores de potássio",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C03DA01",
+          "dci": "Espironolactona",
+          "inn": "spironolactone",
+          "props": [
+            "kup"
+          ]
+        },
+        {
+          "atc": "C03DA04",
+          "dci": "Eplerenona",
+          "inn": "eplerenone",
+          "props": [
+            "cyp3a4s",
+            "kup"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C07AB",
+      "classe": "Beta-bloqueantes cardiosseletivos",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C07AB07",
+          "dci": "Bisoprolol",
+          "inn": "bisoprolol",
+          "props": [
+            "avnode",
+            "bbloq"
+          ]
+        },
+        {
+          "atc": "C07AB02",
+          "dci": "Metoprolol",
+          "inn": "metoprolol",
+          "props": [
+            "avnode",
+            "bbloq",
+            "cyp2d6s"
+          ]
+        },
+        {
+          "atc": "C07AB03",
+          "dci": "Atenolol",
+          "inn": "atenolol",
+          "props": [
+            "avnode",
+            "bbloq"
+          ]
+        },
+        {
+          "atc": "C07AB12",
+          "dci": "Nebivolol",
+          "inn": "nebivolol",
+          "props": [
+            "avnode",
+            "bbloq",
+            "cyp2d6s"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C07AG",
+      "classe": "Beta-bloqueantes com bloqueio alfa",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C07AG02",
+          "dci": "Carvedilol",
+          "inn": "carvedilol",
+          "props": [
+            "alfa1blq",
+            "avnode",
+            "bbloq",
+            "cyp2d6s",
+            "pgpi"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C07AA",
+      "classe": "Beta-bloqueantes não seletivos",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C07AA05",
+          "dci": "Propranolol",
+          "inn": "propranolol",
+          "props": [
+            "avnode",
+            "bbloq",
+            "cyp2d6s"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C08CA",
+      "classe": "BCC di-hidropiridínicos",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C08CA01",
+          "dci": "Amlodipina",
+          "inn": "amlodipine",
+          "props": [
+            "cyp3a4s"
+          ]
+        },
+        {
+          "atc": "C08CA05",
+          "dci": "Nifedipina",
+          "inn": "nifedipine",
+          "props": [
+            "cyp3a4s"
+          ]
+        },
+        {
+          "atc": "C08CA13",
+          "dci": "Lercanidipina",
+          "inn": "lercanidipine",
+          "props": [
+            "cyp3a4s"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C08DA",
+      "classe": "BCC não di-hidropiridínicos",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C08DA01",
+          "dci": "Verapamil",
+          "inn": "verapamil",
+          "props": [
+            "avnode_forte",
+            "ccb_nondhp",
+            "cyp3a4i_mod",
+            "cyp3a4s",
+            "pgpi"
+          ]
+        },
+        {
+          "atc": "C08DB01",
+          "dci": "Diltiazem",
+          "inn": "diltiazem",
+          "props": [
+            "avnode_forte",
+            "ccb_nondhp",
+            "cyp3a4i_mod",
+            "cyp3a4s",
+            "pgpi"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C09AA",
+      "classe": "IECA",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C09AA02",
+          "dci": "Enalapril",
+          "inn": "enalapril",
+          "props": [
+            "ieca_ara",
+            "kup"
+          ]
+        },
+        {
+          "atc": "C09AA05",
+          "dci": "Ramipril",
+          "inn": "ramipril",
+          "props": [
+            "ieca_ara",
+            "kup"
+          ]
+        },
+        {
+          "atc": "C09AA04",
+          "dci": "Perindopril",
+          "inn": "perindopril",
+          "props": [
+            "ieca_ara",
+            "kup"
+          ]
+        },
+        {
+          "atc": "C09AA03",
+          "dci": "Lisinopril",
+          "inn": "lisinopril",
+          "props": [
+            "ieca_ara",
+            "kup"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C09CA",
+      "classe": "Antagonistas dos recetores da angiotensina (ARA)",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C09CA01",
+          "dci": "Losartan",
+          "inn": "losartan",
+          "props": [
+            "ieca_ara",
+            "kup"
+          ]
+        },
+        {
+          "atc": "C09CA03",
+          "dci": "Valsartan",
+          "inn": "valsartan",
+          "props": [
+            "ieca_ara",
+            "kup"
+          ]
+        },
+        {
+          "atc": "C09CA06",
+          "dci": "Candesartan",
+          "inn": "candesartan",
+          "props": [
+            "ieca_ara",
+            "kup"
+          ]
+        },
+        {
+          "atc": "C09CA07",
+          "dci": "Telmisartan",
+          "inn": "telmisartan",
+          "props": [
+            "ieca_ara",
+            "kup"
+          ]
+        },
+        {
+          "atc": "C09CA04",
+          "dci": "Irbesartan",
+          "inn": "irbesartan",
+          "props": [
+            "ieca_ara",
+            "kup"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C10AA",
+      "classe": "Estatinas (inibidores da HMG-CoA redutase)",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C10AA01",
+          "dci": "Sinvastatina",
+          "inn": "simvastatin",
+          "props": [
+            "estatina",
+            "estatina3a4"
+          ]
+        },
+        {
+          "atc": "C10AA05",
+          "dci": "Atorvastatina",
+          "inn": "atorvastatin",
+          "props": [
+            "estatina",
+            "estatina3a4"
+          ]
+        },
+        {
+          "atc": "C10AA07",
+          "dci": "Rosuvastatina",
+          "inn": "rosuvastatin",
+          "props": [
+            "estatina"
+          ]
+        },
+        {
+          "atc": "C10AA03",
+          "dci": "Pravastatina",
+          "inn": "pravastatin",
+          "props": [
+            "estatina"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C10AB",
+      "classe": "Fibratos",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C10AB05",
+          "dci": "Fenofibrato",
+          "inn": "fenofibrate",
+          "props": [
+            "fibrato"
+          ]
+        },
+        {
+          "atc": "C10AB04",
+          "dci": "Genfibrozil",
+          "inn": "gemfibrozil",
+          "props": [
+            "fibrato",
+            "fibrato_alto"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "C10AX",
+      "classe": "Outros modificadores dos lípidos",
+      "grupo_atc": "C",
+      "grupo_nome": "Sistema cardiovascular",
+      "substancias": [
+        {
+          "atc": "C10AX09",
+          "dci": "Ezetimiba",
+          "inn": "ezetimibe",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "G04CA",
+      "classe": "Alfa-bloqueantes (hiperplasia benigna da próstata)",
+      "grupo_atc": "G",
+      "grupo_nome": "Sistema geniturinário e hormonas sexuais",
+      "substancias": [
+        {
+          "atc": "G04CA02",
+          "dci": "Tansulosina",
+          "inn": "tamsulosin",
+          "props": [
+            "alfa1blq",
+            "cyp3a4s"
+          ]
+        },
+        {
+          "atc": "G04CA01",
+          "dci": "Alfuzosina",
+          "inn": "alfuzosin",
+          "props": [
+            "alfa1blq",
+            "cyp3a4s"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "G04CB",
+      "classe": "Inibidores da 5-alfa-redutase",
+      "grupo_atc": "G",
+      "grupo_nome": "Sistema geniturinário e hormonas sexuais",
+      "substancias": [
+        {
+          "atc": "G04CB01",
+          "dci": "Finasterida",
+          "inn": "finasteride",
+          "props": []
+        },
+        {
+          "atc": "G04CB02",
+          "dci": "Dutasterida",
+          "inn": "dutasteride",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "G04BE",
+      "classe": "Inibidores da PDE5",
+      "grupo_atc": "G",
+      "grupo_nome": "Sistema geniturinário e hormonas sexuais",
+      "substancias": [
+        {
+          "atc": "G04BE03",
+          "dci": "Sildenafil",
+          "inn": "sildenafil",
+          "props": [
+            "cyp3a4s",
+            "pde5"
+          ]
+        },
+        {
+          "atc": "G04BE08",
+          "dci": "Tadalafil",
+          "inn": "tadalafil",
+          "props": [
+            "cyp3a4s",
+            "pde5"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "H02AB",
+      "classe": "Corticosteroides sistémicos",
+      "grupo_atc": "H",
+      "grupo_nome": "Hormonas sistémicas (excl. sexuais)",
+      "substancias": [
+        {
+          "atc": "H02AB07",
+          "dci": "Prednisolona",
+          "inn": "prednisolone",
+          "props": [
+            "corticoide",
+            "gi",
+            "hipergli",
+            "kdown"
+          ]
+        },
+        {
+          "atc": "H02AB06",
+          "dci": "Prednisona",
+          "inn": "prednisone",
+          "props": [
+            "corticoide",
+            "gi",
+            "hipergli",
+            "kdown"
+          ]
+        },
+        {
+          "atc": "H02AB02",
+          "dci": "Dexametasona",
+          "inn": "dexamethasone",
+          "props": [
+            "corticoide",
+            "cyp3a4ind",
+            "gi",
+            "hipergli",
+            "kdown"
+          ]
+        },
+        {
+          "atc": "H02AB04",
+          "dci": "Metilprednisolona",
+          "inn": "methylprednisolone",
+          "props": [
+            "corticoide",
+            "cyp3a4s",
+            "gi",
+            "hipergli",
+            "kdown"
+          ]
+        },
+        {
+          "atc": "H02AB09",
+          "dci": "Hidrocortisona",
+          "inn": "hydrocortisone",
+          "props": [
+            "corticoide",
+            "gi",
+            "hipergli",
+            "kdown"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "H03AA",
+      "classe": "Hormonas tiroideias",
+      "grupo_atc": "H",
+      "grupo_nome": "Hormonas sistémicas (excl. sexuais)",
+      "substancias": [
+        {
+          "atc": "H03AA01",
+          "dci": "Levotiroxina",
+          "inn": "levothyroxine",
+          "props": [
+            "quelacao_cationica"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "H03BB",
+      "classe": "Antitiroideus (imidazóis)",
+      "grupo_atc": "H",
+      "grupo_nome": "Hormonas sistémicas (excl. sexuais)",
+      "substancias": [
+        {
+          "atc": "H03BB02",
+          "dci": "Tiamazol",
+          "inn": "thiamazole",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "J01CA",
+      "classe": "Penicilinas de espectro alargado",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J01CA04",
+          "dci": "Amoxicilina",
+          "inn": "amoxicillin",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "J01CR",
+      "classe": "Penicilinas + inibidor de beta-lactamases",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J01CR02",
+          "dci": "Amoxicilina + ácido clavulânico",
+          "inn": "amoxicillin and clavulanic acid",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "J01CF",
+      "classe": "Penicilinas antiestafilocócicas",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J01CF05",
+          "dci": "Flucloxacilina",
+          "inn": "flucloxacillin",
+          "props": [
+            "inr_down"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "J01DC",
+      "classe": "Cefalosporinas de 2.ª geração",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J01DC02",
+          "dci": "Cefuroxima",
+          "inn": "cefuroxime",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "J01DD",
+      "classe": "Cefalosporinas de 3.ª geração",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J01DD04",
+          "dci": "Ceftriaxona",
+          "inn": "ceftriaxone",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "J01FA",
+      "classe": "Macrólidos",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J01FA10",
+          "dci": "Azitromicina",
+          "inn": "azithromycin",
+          "props": [
+            "qt_known"
+          ]
+        },
+        {
+          "atc": "J01FA09",
+          "dci": "Claritromicina",
+          "inn": "clarithromycin",
+          "props": [
+            "cyp3a4i_forte",
+            "inr_up",
+            "pgpi",
+            "qt_known"
+          ]
+        },
+        {
+          "atc": "J01FA01",
+          "dci": "Eritromicina",
+          "inn": "erythromycin",
+          "props": [
+            "cyp3a4i_mod",
+            "inr_up",
+            "pgpi",
+            "qt_known"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "J01FF",
+      "classe": "Lincosamidas",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J01FF01",
+          "dci": "Clindamicina",
+          "inn": "clindamycin",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "J01MA",
+      "classe": "Fluoroquinolonas",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J01MA02",
+          "dci": "Ciprofloxacina",
+          "inn": "ciprofloxacin",
+          "props": [
+            "cyp1a2i",
+            "disglic",
+            "inr_up",
+            "qt_possible",
+            "quelacao_cationica"
+          ]
+        },
+        {
+          "atc": "J01MA12",
+          "dci": "Levofloxacina",
+          "inn": "levofloxacin",
+          "props": [
+            "disglic",
+            "inr_up",
+            "qt_known",
+            "quelacao_cationica"
+          ]
+        },
+        {
+          "atc": "J01MA06",
+          "dci": "Norfloxacina",
+          "inn": "norfloxacin",
+          "props": [
+            "disglic",
+            "qt_cond",
+            "quelacao_cationica"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "J01AA",
+      "classe": "Tetraciclinas",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J01AA02",
+          "dci": "Doxiciclina",
+          "inn": "doxycycline",
+          "props": [
+            "quelacao_cationica"
+          ]
+        },
+        {
+          "atc": "J01AA08",
+          "dci": "Minociclina",
+          "inn": "minocycline",
+          "props": [
+            "quelacao_cationica"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "J01EE",
+      "classe": "Sulfonamidas + trimetoprim",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J01EE01",
+          "dci": "Cotrimoxazol (sulfametoxazol+trimetoprim)",
+          "inn": "sulfamethoxazole and trimethoprim",
+          "props": [
+            "cyp2c9i",
+            "inr_up",
+            "inr_up_forte",
+            "kup",
+            "trimetoprim"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "J01XE",
+      "classe": "Nitrofuranos",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J01XE01",
+          "dci": "Nitrofurantoína",
+          "inn": "nitrofurantoin",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "J02AC",
+      "classe": "Antifúngicos triazólicos",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J02AC01",
+          "dci": "Fluconazol",
+          "inn": "fluconazole",
+          "props": [
+            "cyp2c9i",
+            "cyp3a4i_mod",
+            "inr_up",
+            "inr_up_forte",
+            "qt_known"
+          ]
+        },
+        {
+          "atc": "J02AC02",
+          "dci": "Itraconazol",
+          "inn": "itraconazole",
+          "props": [
+            "cyp3a4i_forte",
+            "inr_up",
+            "qt_possible"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "J05AB",
+      "classe": "Antivirais (nucleósidos, herpes)",
+      "grupo_atc": "J",
+      "grupo_nome": "Anti-infecciosos gerais para uso sistémico",
+      "substancias": [
+        {
+          "atc": "J05AB01",
+          "dci": "Aciclovir",
+          "inn": "aciclovir",
+          "props": []
+        },
+        {
+          "atc": "J05AB11",
+          "dci": "Valaciclovir",
+          "inn": "valaciclovir",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "M01AE",
+      "classe": "AINE derivados do ácido propiónico",
+      "grupo_atc": "M",
+      "grupo_nome": "Sistema musculoesquelético",
+      "substancias": [
+        {
+          "atc": "M01AE01",
+          "dci": "Ibuprofeno",
+          "inn": "ibuprofen",
+          "props": [
+            "aine",
+            "gi"
+          ]
+        },
+        {
+          "atc": "M01AE02",
+          "dci": "Naproxeno",
+          "inn": "naproxen",
+          "props": [
+            "aine",
+            "gi"
+          ]
+        },
+        {
+          "atc": "M01AE03",
+          "dci": "Cetoprofeno",
+          "inn": "ketoprofen",
+          "props": [
+            "aine",
+            "gi"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "M01AB",
+      "classe": "AINE derivados do ácido acético",
+      "grupo_atc": "M",
+      "grupo_nome": "Sistema musculoesquelético",
+      "substancias": [
+        {
+          "atc": "M01AB05",
+          "dci": "Diclofenac",
+          "inn": "diclofenac",
+          "props": [
+            "aine",
+            "gi"
+          ]
+        },
+        {
+          "atc": "M01AB01",
+          "dci": "Indometacina",
+          "inn": "indomethacin",
+          "props": [
+            "aine",
+            "gi"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "M01AC",
+      "classe": "AINE oxicams",
+      "grupo_atc": "M",
+      "grupo_nome": "Sistema musculoesquelético",
+      "substancias": [
+        {
+          "atc": "M01AC01",
+          "dci": "Piroxicam",
+          "inn": "piroxicam",
+          "props": [
+            "aine",
+            "gi"
+          ]
+        },
+        {
+          "atc": "M01AC06",
+          "dci": "Meloxicam",
+          "inn": "meloxicam",
+          "props": [
+            "aine",
+            "gi"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "M01AH",
+      "classe": "AINE inibidores seletivos da COX-2",
+      "grupo_atc": "M",
+      "grupo_nome": "Sistema musculoesquelético",
+      "substancias": [
+        {
+          "atc": "M01AH05",
+          "dci": "Etoricoxib",
+          "inn": "etoricoxib",
+          "props": [
+            "aine",
+            "gi"
+          ]
+        },
+        {
+          "atc": "M01AH01",
+          "dci": "Celecoxib",
+          "inn": "celecoxib",
+          "props": [
+            "aine",
+            "gi"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "M04AA",
+      "classe": "Inibidores da xantina-oxidase (antigotosos)",
+      "grupo_atc": "M",
+      "grupo_nome": "Sistema musculoesquelético",
+      "substancias": [
+        {
+          "atc": "M04AA01",
+          "dci": "Alopurinol",
+          "inn": "allopurinol",
+          "props": [
+            "xantina_oxidase_i"
+          ]
+        },
+        {
+          "atc": "M04AA03",
+          "dci": "Febuxostat",
+          "inn": "febuxostat",
+          "props": [
+            "xantina_oxidase_i"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "M04AC",
+      "classe": "Colchicina",
+      "grupo_atc": "M",
+      "grupo_nome": "Sistema musculoesquelético",
+      "substancias": [
+        {
+          "atc": "M04AC01",
+          "dci": "Colchicina",
+          "inn": "colchicine",
+          "props": [
+            "colchicina",
+            "cyp3a4s_estreito",
+            "pgps"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "M05BA",
+      "classe": "Bifosfonatos",
+      "grupo_atc": "M",
+      "grupo_nome": "Sistema musculoesquelético",
+      "substancias": [
+        {
+          "atc": "M05BA04",
+          "dci": "Alendronato",
+          "inn": "alendronic acid",
+          "props": [
+            "gi",
+            "quelacao_cationica"
+          ]
+        },
+        {
+          "atc": "M05BA08",
+          "dci": "Ácido zoledrónico",
+          "inn": "zoledronic acid",
+          "props": [
+            "quelacao_cationica"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N02BE",
+      "classe": "Anilidas (paracetamol)",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N02BE01",
+          "dci": "Paracetamol",
+          "inn": "paracetamol",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "N02AA",
+      "classe": "Opioides naturais",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N02AA01",
+          "dci": "Morfina",
+          "inn": "morphine",
+          "props": [
+            "opioide",
+            "snc"
+          ]
+        },
+        {
+          "atc": "N02AA05",
+          "dci": "Oxicodona",
+          "inn": "oxycodone",
+          "props": [
+            "opioide",
+            "snc"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N02AX",
+      "classe": "Outros opioides",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N02AX02",
+          "dci": "Tramadol",
+          "inn": "tramadol",
+          "props": [
+            "opioide",
+            "seroton_forte",
+            "snc"
+          ]
+        },
+        {
+          "atc": "N02AX06",
+          "dci": "Tapentadol",
+          "inn": "tapentadol",
+          "props": [
+            "opioide",
+            "seroton_fraco",
+            "snc"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N02AB",
+      "classe": "Derivados da fenilpiperidina",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N02AB03",
+          "dci": "Fentanil",
+          "inn": "fentanyl",
+          "props": [
+            "cyp3a4s_estreito",
+            "opioide",
+            "snc"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N02CC",
+      "classe": "Triptanos (agonistas 5-HT1)",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N02CC01",
+          "dci": "Sumatriptano",
+          "inn": "sumatriptan",
+          "props": [
+            "seroton_fraco"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N03AX",
+      "classe": "Outros antiepiléticos",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N03AX14",
+          "dci": "Levetiracetam",
+          "inn": "levetiracetam",
+          "props": []
+        },
+        {
+          "atc": "N03AX12",
+          "dci": "Gabapentina",
+          "inn": "gabapentin",
+          "props": [
+            "gabapentinoide",
+            "snc"
+          ]
+        },
+        {
+          "atc": "N03AX16",
+          "dci": "Pregabalina",
+          "inn": "pregabalin",
+          "props": [
+            "gabapentinoide",
+            "snc"
+          ]
+        },
+        {
+          "atc": "N03AX11",
+          "dci": "Topiramato",
+          "inn": "topiramate",
+          "props": []
+        },
+        {
+          "atc": "N03AX09",
+          "dci": "Lamotrigina",
+          "inn": "lamotrigine",
+          "props": [
+            "lamotrigina"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N03AG",
+      "classe": "Derivados de ácidos gordos (valproato)",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N03AG01",
+          "dci": "Valproato de sódio",
+          "inn": "valproic acid",
+          "props": [
+            "valproato"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N03AF",
+      "classe": "Derivados da carboxamida",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N03AF01",
+          "dci": "Carbamazepina",
+          "inn": "carbamazepine",
+          "props": [
+            "carbamazepina",
+            "cyp3a4ind",
+            "hiponatremia",
+            "inr_down"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N05AH",
+      "classe": "Antipsicóticos (diazepinas/oxazepinas)",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N05AH04",
+          "dci": "Quetiapina",
+          "inn": "quetiapine",
+          "props": [
+            "cyp3a4s_estreito",
+            "qt_possible",
+            "snc"
+          ]
+        },
+        {
+          "atc": "N05AH03",
+          "dci": "Olanzapina",
+          "inn": "olanzapine",
+          "props": [
+            "cyp1a2s",
+            "qt_possible",
+            "snc"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N05AX",
+      "classe": "Outros antipsicóticos",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N05AX08",
+          "dci": "Risperidona",
+          "inn": "risperidone",
+          "props": [
+            "qt_possible",
+            "snc"
+          ]
+        },
+        {
+          "atc": "N05AX12",
+          "dci": "Aripiprazol",
+          "inn": "aripiprazole",
+          "props": [
+            "snc"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N05AD",
+      "classe": "Butirofenonas",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N05AD01",
+          "dci": "Haloperidol",
+          "inn": "haloperidol",
+          "props": [
+            "qt_known",
+            "snc"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N05BA",
+      "classe": "Benzodiazepinas (ansiolíticos)",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N05BA01",
+          "dci": "Diazepam",
+          "inn": "diazepam",
+          "props": [
+            "benzo",
+            "snc"
+          ]
+        },
+        {
+          "atc": "N05BA12",
+          "dci": "Alprazolam",
+          "inn": "alprazolam",
+          "props": [
+            "benzo",
+            "cyp3a4s",
+            "snc"
+          ]
+        },
+        {
+          "atc": "N05BA06",
+          "dci": "Lorazepam",
+          "inn": "lorazepam",
+          "props": [
+            "benzo",
+            "snc"
+          ]
+        },
+        {
+          "atc": "N05BA08",
+          "dci": "Bromazepam",
+          "inn": "bromazepam",
+          "props": [
+            "benzo",
+            "snc"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N05CF",
+      "classe": "Hipnóticos análogos das benzodiazepinas",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N05CF02",
+          "dci": "Zolpidem",
+          "inn": "zolpidem",
+          "props": [
+            "benzo",
+            "snc"
+          ]
+        },
+        {
+          "atc": "N05CF01",
+          "dci": "Zopiclona",
+          "inn": "zopiclone",
+          "props": [
+            "benzo",
+            "snc"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N06AB",
+      "classe": "ISRS (inibidores seletivos da recaptação da serotonina)",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N06AB06",
+          "dci": "Sertralina",
+          "inn": "sertraline",
+          "props": [
+            "hiponatremia",
+            "isrs_hemorr",
+            "seroton_forte"
+          ]
+        },
+        {
+          "atc": "N06AB03",
+          "dci": "Fluoxetina",
+          "inn": "fluoxetine",
+          "props": [
+            "cyp2d6i",
+            "hiponatremia",
+            "isrs_hemorr",
+            "seroton_forte"
+          ]
+        },
+        {
+          "atc": "N06AB04",
+          "dci": "Citalopram",
+          "inn": "citalopram",
+          "props": [
+            "hiponatremia",
+            "isrs_hemorr",
+            "qt_known",
+            "seroton_forte"
+          ]
+        },
+        {
+          "atc": "N06AB10",
+          "dci": "Escitalopram",
+          "inn": "escitalopram",
+          "props": [
+            "hiponatremia",
+            "isrs_hemorr",
+            "qt_known",
+            "seroton_forte"
+          ]
+        },
+        {
+          "atc": "N06AB05",
+          "dci": "Paroxetina",
+          "inn": "paroxetine",
+          "props": [
+            "cyp2d6i",
+            "hiponatremia",
+            "isrs_hemorr",
+            "seroton_forte"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N06AX",
+      "classe": "Outros antidepressivos",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N06AX16",
+          "dci": "Venlafaxina",
+          "inn": "venlafaxine",
+          "props": [
+            "hiponatremia",
+            "isrs_hemorr",
+            "seroton_forte"
+          ]
+        },
+        {
+          "atc": "N06AX21",
+          "dci": "Duloxetina",
+          "inn": "duloxetine",
+          "props": [
+            "hiponatremia",
+            "isrs_hemorr",
+            "seroton_forte"
+          ]
+        },
+        {
+          "atc": "N06AX11",
+          "dci": "Mirtazapina",
+          "inn": "mirtazapine",
+          "props": [
+            "snc"
+          ]
+        },
+        {
+          "atc": "N06AX05",
+          "dci": "Trazodona",
+          "inn": "trazodone",
+          "props": [
+            "hiponatremia",
+            "isrs_hemorr",
+            "qt_possible",
+            "seroton_fraco",
+            "snc"
+          ]
+        },
+        {
+          "atc": "N06AX12",
+          "dci": "Bupropiom",
+          "inn": "bupropion",
+          "props": [
+            "cyp2d6i"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N06AA",
+      "classe": "Antidepressivos tricíclicos",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N06AA09",
+          "dci": "Amitriptilina",
+          "inn": "amitriptyline",
+          "props": [
+            "anticol",
+            "qt_cond",
+            "snc",
+            "tca"
+          ]
+        },
+        {
+          "atc": "N06AA10",
+          "dci": "Nortriptilina",
+          "inn": "nortriptyline",
+          "props": [
+            "anticol",
+            "qt_cond",
+            "snc",
+            "tca"
+          ]
+        },
+        {
+          "atc": "N06AA04",
+          "dci": "Clomipramina",
+          "inn": "clomipramine",
+          "props": [
+            "anticol",
+            "qt_cond",
+            "seroton_forte",
+            "snc",
+            "tca"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N05AN",
+      "classe": "Lítio (estabilizador de humor)",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N05AN01",
+          "dci": "Lítio",
+          "inn": "lithium",
+          "props": [
+            "litio"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N06DA",
+      "classe": "Anticolinesterásicos (demência)",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N06DA02",
+          "dci": "Donepezilo",
+          "inn": "donepezil",
+          "props": [
+            "colinergico",
+            "qt_cond"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N04BA",
+      "classe": "Dopa e derivados",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N04BA02",
+          "dci": "Levodopa + carbidopa",
+          "inn": "levodopa and carbidopa",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "L04AX",
+      "classe": "Imunossupressores (tiopurinas)",
+      "grupo_atc": "L",
+      "grupo_nome": "Antineoplásicos e imunomoduladores",
+      "substancias": [
+        {
+          "atc": "L04AX01",
+          "dci": "Azatioprina",
+          "inn": "azathioprine",
+          "props": [
+            "tiopurina"
+          ]
+        },
+        {
+          "atc": "L01BB02",
+          "dci": "Mercaptopurina",
+          "inn": "mercaptopurine",
+          "props": [
+            "tiopurina"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "L01BA",
+      "classe": "Antimetabolito (metotrexato)",
+      "grupo_atc": "L",
+      "grupo_nome": "Antineoplásicos e imunomoduladores",
+      "substancias": [
+        {
+          "atc": "L01BA01",
+          "dci": "Metotrexato",
+          "inn": "methotrexate",
+          "props": [
+            "metotrexato"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "P01AB",
+      "classe": "Nitroimidazóis",
+      "grupo_atc": "P",
+      "grupo_nome": "Antiparasitários",
+      "substancias": [
+        {
+          "atc": "P01AB01",
+          "dci": "Metronidazol",
+          "inn": "metronidazole",
+          "props": [
+            "cyp2c9i",
+            "dissulfiram",
+            "inr_up",
+            "inr_up_forte"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "R03AC",
+      "classe": "Agonistas beta-2 inalados",
+      "grupo_atc": "R",
+      "grupo_nome": "Sistema respiratório",
+      "substancias": [
+        {
+          "atc": "R03AC02",
+          "dci": "Salbutamol",
+          "inn": "salbutamol",
+          "props": []
+        },
+        {
+          "atc": "R03AC13",
+          "dci": "Formoterol",
+          "inn": "formoterol",
+          "props": [
+            "qt_cond"
+          ]
+        },
+        {
+          "atc": "R03AC12",
+          "dci": "Salmeterol",
+          "inn": "salmeterol",
+          "props": [
+            "qt_cond"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "R03BA",
+      "classe": "Corticosteroides inalados",
+      "grupo_atc": "R",
+      "grupo_nome": "Sistema respiratório",
+      "substancias": [
+        {
+          "atc": "R03BA02",
+          "dci": "Budesonida",
+          "inn": "budesonide",
+          "props": []
+        },
+        {
+          "atc": "R03BA05",
+          "dci": "Fluticasona",
+          "inn": "fluticasone",
+          "props": []
+        },
+        {
+          "atc": "R03BA01",
+          "dci": "Beclometasona",
+          "inn": "beclometasone",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "R03BB",
+      "classe": "Anticolinérgicos inalados",
+      "grupo_atc": "R",
+      "grupo_nome": "Sistema respiratório",
+      "substancias": [
+        {
+          "atc": "R03BB01",
+          "dci": "Brometo de ipratrópio",
+          "inn": "ipratropium bromide",
+          "props": [
+            "anticol"
+          ]
+        },
+        {
+          "atc": "R03BB04",
+          "dci": "Tiotrópio",
+          "inn": "tiotropium",
+          "props": [
+            "anticol"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "R03DC",
+      "classe": "Antagonistas dos leucotrienos",
+      "grupo_atc": "R",
+      "grupo_nome": "Sistema respiratório",
+      "substancias": [
+        {
+          "atc": "R03DC03",
+          "dci": "Montelucaste",
+          "inn": "montelukast",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "R06AE",
+      "classe": "Anti-histamínicos de 2.ª geração (piperazinas)",
+      "grupo_atc": "R",
+      "grupo_nome": "Sistema respiratório",
+      "substancias": [
+        {
+          "atc": "R06AE07",
+          "dci": "Cetirizina",
+          "inn": "cetirizine",
+          "props": []
+        },
+        {
+          "atc": "R06AE09",
+          "dci": "Levocetirizina",
+          "inn": "levocetirizine",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "R06AX",
+      "classe": "Anti-histamínicos de 2.ª geração (outros)",
+      "grupo_atc": "R",
+      "grupo_nome": "Sistema respiratório",
+      "substancias": [
+        {
+          "atc": "R06AX13",
+          "dci": "Loratadina",
+          "inn": "loratadine",
+          "props": []
+        },
+        {
+          "atc": "R06AX27",
+          "dci": "Desloratadina",
+          "inn": "desloratadine",
+          "props": []
+        },
+        {
+          "atc": "R06AX26",
+          "dci": "Fexofenadina",
+          "inn": "fexofenadine",
+          "props": []
+        },
+        {
+          "atc": "R06AX29",
+          "dci": "Bilastina",
+          "inn": "bilastine",
+          "props": []
+        }
+      ]
+    },
+    {
+      "atc_classe": "R06AA",
+      "classe": "Anti-histamínicos de 1.ª geração (aminoalquiléteres)",
+      "grupo_atc": "R",
+      "grupo_nome": "Sistema respiratório",
+      "substancias": [
+        {
+          "atc": "R06AA02",
+          "dci": "Difenidramina",
+          "inn": "diphenhydramine",
+          "props": [
+            "anticol",
+            "snc"
+          ]
+        }
+      ]
+    },
+    {
+      "atc_classe": "N05BB",
+      "classe": "Difenilmetano derivados (anti-histamínicos sedativos)",
+      "grupo_atc": "N",
+      "grupo_nome": "Sistema nervoso",
+      "substancias": [
+        {
+          "atc": "N05BB01",
+          "dci": "Hidroxizina",
+          "inn": "hydroxyzine",
+          "props": [
+            "anticol",
+            "qt_possible",
+            "snc"
+          ]
+        }
+      ]
+    }
+  ]
+}
