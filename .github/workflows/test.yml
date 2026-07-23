@@ -10,9 +10,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # As actions @v5 já correm em Node 24. As @v4 ainda usavam Node 20,
+      # que o GitHub deixou de suportar — daí o aviso de deprecação no CI.
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '22'
 

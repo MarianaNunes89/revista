@@ -24,8 +24,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      # checkout@v5 corre em Node 24 (a @v4 usava Node 20, já deprecado).
+      # As outras actions de Pages abaixo já estão nas versões actuais.
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
